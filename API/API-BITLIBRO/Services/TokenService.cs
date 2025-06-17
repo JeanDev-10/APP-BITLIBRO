@@ -28,7 +28,6 @@ public class TokenService
             new (JwtRegisteredClaimNames.Email, user.Email!),
             new (JwtRegisteredClaimNames.Name, user.Name!),
             new (JwtRegisteredClaimNames.NameId, user.Id!),
-            new Claim("name", user.Name),
             new Claim("lastname", user.LastName),
             new Claim("ci", user.Ci),
             new (JwtRegisteredClaimNames.Aud, _config["JWTSettings:Audience"]!),

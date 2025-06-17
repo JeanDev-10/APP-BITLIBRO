@@ -45,9 +45,47 @@ Incluye los siguientes endpoints:
 
 ![Módulo Auth Swagger](capturas/DOCAUTH.png)
 
+### 🔐 Endpoints principales
+
+### 📌 Módulo Auth (/api/auth)
+
+| Método | Ruta               | Descripción                       | Requiere JWT |
+| ------ | ------------------ | --------------------------------- | ------------ |
+| POST   | `/api/auth/login`  | Login de usuario                  | ❌           |
+| POST   | `/api/auth/logout` | Cerrar sesión (invalida el token) | ✅           |
+| GET    | `/api/auth/me`     | Obtener datos del usuario actual  | ✅           |
+
 ### Digrama de caso de uso
+
 ![Módulo Auth Diagrama de casos de uso](capturas/DCAUTH.png)
 
+## 👻 Módulo de Géneros
+
+Incluye los siguientes endpoints:
+
+- `GET /api/genre`: Ver géneros (se puede filtar por Name y paginar con Page - PageSize ).
+- `GET /api/genre/{id}`: Ver un género.
+- `POST /api/genre`: Crear género con validación usando FluentValidation.
+- `PUT /api/genre/{id}`: Editar género con validación usando FluentValidation.
+- `DELETE /api/genre/{id}`: Eliminar género.
+
+![Módulo Generos Swagger](capturas/DOCGENRE.png)
+
+### 🔐 Endpoints principales
+
+### 📌 Módulo Género (/api/genre)
+
+| Método | Ruta               | Descripción        | Requiere JWT | Admin | Employe |
+| ------ | ------------------ | ------------------ | ------------ | ----- | ------- |
+| GET    | `/api/genres/`     | Ver géneros        | ✅           | ✅    | ❌      |
+| GET    | `/api/genres/{id}` | Ver un género      | ✅           | ✅    | ❌      |
+| POST   | `/api/genres/`     | Crear género       | ✅           | ✅    | ❌      |
+| PUT    | `/api/genres/{id}` | Editar un género   | ✅           | ✅    | ❌      |
+| DELETE | `/api/genres/{id}` | Eliminar un género | ✅           | ✅    | ❌      |
+
+### Digrama de caso de uso
+
+![Módulo Auth Diagrama de casos de uso](capturas/DCGENRE.png)
 
 ## 📦 Instalación y configuración
 
@@ -84,6 +122,8 @@ dotnet ef database update
 ```bash
 dotnet run
 ```
+
 ---
+
 Acceder a la documentación:
 Abrir en navegador: http://localhost:5188/swagger
