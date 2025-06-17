@@ -52,7 +52,8 @@ namespace API_BITLIBRO.Controllers
             var validationResult = await _createValidator.ValidateAsync(createDto);
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors);
+                var errores = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { Errors = errores });
             }
 
             try
@@ -79,7 +80,8 @@ namespace API_BITLIBRO.Controllers
             var validationResult = await _updateValidator.ValidateAsync(updateDto);
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors);
+                var errores = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { Errors = errores });
             }
 
             try

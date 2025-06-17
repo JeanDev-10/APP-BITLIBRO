@@ -93,11 +93,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<GenreService>();
+builder.Services.AddScoped<EmployeeService>();
 
 var app = builder.Build();
 
@@ -109,10 +109,11 @@ if (app.Environment.IsDevelopment())
 }
 
 
-//permitir peticiones desde cualquier origen
+//permitir peticiones desde origen
+var origens= builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new string[] { "http://localhost:4200" };
 app.UseCors(options =>
 {
-    options.AllowAnyOrigin()
+    options.WithOrigins(origens)
         .AllowAnyMethod()
         .AllowAnyHeader();
 });

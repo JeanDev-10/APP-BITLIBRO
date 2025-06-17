@@ -75,17 +75,45 @@ Incluye los siguientes endpoints:
 
 ### 📌 Módulo Género (/api/genre)
 
-| Método | Ruta               | Descripción        | Requiere JWT | Admin | Employe |
-| ------ | ------------------ | ------------------ | ------------ | ----- | ------- |
-| GET    | `/api/genres/`     | Ver géneros        | ✅           | ✅    | ❌      |
-| GET    | `/api/genres/{id}` | Ver un género      | ✅           | ✅    | ❌      |
-| POST   | `/api/genres/`     | Crear género       | ✅           | ✅    | ❌      |
-| PUT    | `/api/genres/{id}` | Editar un género   | ✅           | ✅    | ❌      |
-| DELETE | `/api/genres/{id}` | Eliminar un género | ✅           | ✅    | ❌      |
+| Método | Ruta               | Descripción        | Requiere JWT | Admin | Employee |
+| ------ | ------------------ | ------------------ | ------------ | ----- | -------- |
+| GET    | `/api/genres/`     | Ver géneros        | ✅           | ✅    | ❌       |
+| GET    | `/api/genres/{id}` | Ver un género      | ✅           | ✅    | ❌       |
+| POST   | `/api/genres/`     | Crear género       | ✅           | ✅    | ❌       |
+| PUT    | `/api/genres/{id}` | Editar un género   | ✅           | ✅    | ❌       |
+| DELETE | `/api/genres/{id}` | Eliminar un género | ✅           | ✅    | ❌       |
 
 ### Digrama de caso de uso
 
 ![Módulo Auth Diagrama de casos de uso](capturas/DCGENRE.png)
+
+## 📌 Módulo de Empleados
+
+Incluye los siguientes endpoints:
+
+- `GET /api/employee`: Ver empleados (se puede filtar por Name, LastName y paginar con Page - PageSize ).
+- `GET /api/employee/{id}`: Ver un empleado .
+- `POST /api/employee`: Crear empleado con validación usando FluentValidation.
+- `PUT /api/employee/{id}`: Editar empleado con validación usando FluentValidation.
+- `DELETE /api/employee/{id}`: Eliminar empleado.
+
+![Módulo Generos Swagger](capturas/DOCEMPLOYEE.png)
+
+### 🔐 Endpoints principales
+
+### 📌 Módulo Género (/api/employee)
+
+| Método | Ruta                 | Descripción          | Requiere JWT | Admin | Employee |
+| ------ | -------------------- | -------------------- | ------------ | ----- | -------- |
+| GET    | `/api/employee/`     | Ver empleado         | ✅           | ✅    | ❌       |
+| GET    | `/api/employee/{id}` | Ver un empleado      | ✅           | ✅    | ❌       |
+| POST   | `/api/employee/`     | Crear empleado       | ✅           | ✅    | ❌       |
+| PUT    | `/api/employee/{id}` | Editar un empleado   | ✅           | ✅    | ❌       |
+| DELETE | `/api/employee/{id}` | Eliminar un empleado | ✅           | ✅    | ❌       |
+
+### Digrama de caso de uso
+
+![Módulo Auth Diagrama de casos de uso](capturas/DCEMPLOYEE.png)
 
 ## 📦 Instalación y configuración
 
@@ -97,7 +125,7 @@ cd APP-BITLIBRO/API/API-BITLIBRO
 ```
 
 2. **Configura _appsettings.json_:**
-   Debes agregar las claves JWT y MailSettings necesarias:
+   Debes agregar las claves JWT, conexión a base de datos y los orígines permitidos:
 
 ```json
 "ConnectionStrings": {
@@ -109,15 +137,24 @@ cd APP-BITLIBRO/API/API-BITLIBRO
     "Issuer":"https://localhost:5188",
     "TokenExpirationInMinutes": 60
   },
+  "AllowedOrigins":[
+    "http://localhost:4200"
+  ]
 ```
 
-3. **Ejecuta las migraciones:**
+3. **Instala dependecias y construye**
+```bash
+dotnet restore
+dotnet build
+```
+
+4. **Ejecuta las migraciones:**
 
 ```bash
 dotnet ef database update
 ```
 
-4. **Ejecuta el proyecto:**
+5. **Ejecuta el proyecto:**
 
 ```bash
 dotnet run
@@ -127,3 +164,9 @@ dotnet run
 
 Acceder a la documentación:
 Abrir en navegador: http://localhost:5188/swagger
+
+
+---
+## Autor
+- [Jean Pierre Rodríguez Zambrano](https://github.com/JeanDev-10)
+---
