@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_BITLIBRO.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/genres")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     public class GenreController : ControllerBase

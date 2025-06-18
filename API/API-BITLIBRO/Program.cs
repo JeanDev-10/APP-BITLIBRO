@@ -13,7 +13,7 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.WebHost.UseWebRoot("wwwroot");
 
 
 
@@ -98,6 +98,8 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<GenreService>();
 builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<BookService>();
 
 var app = builder.Build();
 
@@ -107,7 +109,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+// Configuración para servir archivos estáticos
+app.UseStaticFiles();
 
 //permitir peticiones desde origen
 var origens= builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new string[] { "http://localhost:4200" };
@@ -123,6 +126,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 //seed de datos iniciales
 using (var scope = app.Services.CreateScope())

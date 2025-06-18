@@ -1,6 +1,6 @@
 @API_BITLIBRO_HostAddress= http://localhost:5188
-@API_BIT_LIBRO_AccessTokenAdmin=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwibmFtZWlkIjoiZWJmYjY2YWEtMzRjNC00NDBkLWIwYTEtOWFjNTUxMzI5YjBiIiwibGFzdG5hbWUiOiJTeXN0ZW0iLCJjaSI6IjEzMTEyMjAyMTEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0MjAwIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTE4OCIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MDE4ODc5NCwiZXhwIjoxNzUwMTkyMzk0LCJpYXQiOjE3NTAxODg3OTR9.xwUPv3udGu6SZEbaL6hW2HBK-Xe0YHn-3weWrnY2-fE
-@API_BIT_LIBRO_AccessTokenEmployee=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtcGxveWVlQGV4YW1wbGUuY29tIiwibmFtZSI6IkVtcGxveWVlIDEiLCJuYW1laWQiOiJiYjExNzFkOS1iZjMxLTQwNDMtYjYzZS1iMjZjYjg3NDZhNDAiLCJsYXN0bmFtZSI6IkVtcGxveWVlIiwiY2kiOiIxMjM0NTY3ODkwIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUxODgiLCJyb2xlIjoiRW1wbG95ZWUiLCJuYmYiOjE3NTAxODg4MjAsImV4cCI6MTc1MDE5MjQyMCwiaWF0IjoxNzUwMTg4ODIwfQ.RYhHJ6t2TqkjtAuF-ATP6QnYIt8svIc1M04J2UcvPcU
+@API_BIT_LIBRO_AccessTokenAdmin=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwibmFtZWlkIjoiMzRmMjY5ZTQtMzJkNy00ZGExLTllZWMtYTFiZjY0M2E1ZDc5IiwibGFzdG5hbWUiOiJTeXN0ZW0iLCJjaSI6IjEzMTEyMjAyMTEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0MjAwIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTE4OCIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MDI3MDY4NiwiZXhwIjoxNzUwMjc0Mjg2LCJpYXQiOjE3NTAyNzA2ODZ9.eLyrCnLeIzAljmshs_Z9kxLn6LSohBVQ-tryZQJSRxI
+@API_BIT_LIBRO_AccessTokenEmployee=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtcGxveWVlQGV4YW1wbGUuY29tIiwibmFtZSI6IkVtcGxveWVlIDEiLCJuYW1laWQiOiJkNGEyN2YwNC1jYjlkLTQxMzctYTNlMC0wMjZkOTUwODk2YjgiLCJsYXN0bmFtZSI6IkVtcGxveWVlIiwiY2kiOiIxMjM0NTY3ODkwIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUxODgiLCJyb2xlIjoiRW1wbG95ZWUiLCJuYmYiOjE3NTAyNzA3MDksImV4cCI6MTc1MDI3NDMwOSwiaWF0IjoxNzUwMjcwNzA5fQ.aQ4ycndFFVO075rEJSc3B1HaHFJnctmXq_g7MYbj3-s
 
 ### login admin
 POST {{API_BITLIBRO_HostAddress}}/api/auth/login
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 ### register employee (admin)
 
-POST {{API_BITLIBRO_HostAddress}}/api/employee
+POST {{API_BITLIBRO_HostAddress}}/api/employees
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
@@ -41,14 +41,34 @@ Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
 }
 
 ### get genres (admin)
-GET {{API_BITLIBRO_HostAddress}}/api/genre
+GET {{API_BITLIBRO_HostAddress}}/api/genres
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
 
 
 ### get employee (admin)
-GET {{API_BITLIBRO_HostAddress}}/api/employee
+GET {{API_BITLIBRO_HostAddress}}/api/employees
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+
+
+### get books (admin,employee) --> usando token de employee
+GET {{API_BITLIBRO_HostAddress}}/api/books
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenEmployee}}
+
+### get book (admin,employee) --> usando token de employee
+GET {{API_BITLIBRO_HostAddress}}/api/books/5
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenEmployee}}
+
+### delete book (admin) --> usando token de employee
+DELETE {{API_BITLIBRO_HostAddress}}/api/books/4
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenEmployee}}

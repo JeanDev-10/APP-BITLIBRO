@@ -63,17 +63,17 @@ Incluye los siguientes endpoints:
 
 Incluye los siguientes endpoints:
 
-- `GET /api/genre`: Ver géneros (se puede filtar por Name y paginar con Page - PageSize ).
-- `GET /api/genre/{id}`: Ver un género.
-- `POST /api/genre`: Crear género con validación usando FluentValidation.
-- `PUT /api/genre/{id}`: Editar género con validación usando FluentValidation.
-- `DELETE /api/genre/{id}`: Eliminar género.
+- `GET /api/genres`: Ver géneros (se puede filtar por Name y paginar con Page - PageSize ).
+- `GET /api/genres/{id}`: Ver un género.
+- `POST /api/genres`: Crear género con validación usando FluentValidation.
+- `PUT /api/genres/{id}`: Editar género con validación usando FluentValidation.
+- `DELETE /api/genres/{id}`: Eliminar género.
 
 ![Módulo Generos Swagger](capturas/DOCGENRE.png)
 
 ### 🔐 Endpoints principales
 
-### 📌 Módulo Género (/api/genre)
+### 📌 Módulo Género (/api/genres)
 
 | Método | Ruta               | Descripción        | Requiere JWT | Admin | Employee |
 | ------ | ------------------ | ------------------ | ------------ | ----- | -------- |
@@ -91,29 +91,63 @@ Incluye los siguientes endpoints:
 
 Incluye los siguientes endpoints:
 
-- `GET /api/employee`: Ver empleados (se puede filtar por Name, LastName y paginar con Page - PageSize ).
-- `GET /api/employee/{id}`: Ver un empleado .
-- `POST /api/employee`: Crear empleado con validación usando FluentValidation.
-- `PUT /api/employee/{id}`: Editar empleado con validación usando FluentValidation.
-- `DELETE /api/employee/{id}`: Eliminar empleado.
+- `GET /api/employees`: Ver empleados (se puede filtar por Name, LastName y paginar con Page - PageSize ).
+- `GET /api/employees/{id}`: Ver un empleado .
+- `POST /api/employees`: Crear empleado con validación usando FluentValidation.
+- `PUT /api/employees/{id}`: Editar empleado con validación usando FluentValidation.
+- `DELETE /api/employees/{id}`: Eliminar empleado.
 
 ![Módulo Generos Swagger](capturas/DOCEMPLOYEE.png)
 
 ### 🔐 Endpoints principales
 
-### 📌 Módulo Género (/api/employee)
+### 📌 Módulo Empleado (/api/employees)
 
 | Método | Ruta                 | Descripción          | Requiere JWT | Admin | Employee |
 | ------ | -------------------- | -------------------- | ------------ | ----- | -------- |
-| GET    | `/api/employee/`     | Ver empleado         | ✅           | ✅    | ❌       |
-| GET    | `/api/employee/{id}` | Ver un empleado      | ✅           | ✅    | ❌       |
-| POST   | `/api/employee/`     | Crear empleado       | ✅           | ✅    | ❌       |
-| PUT    | `/api/employee/{id}` | Editar un empleado   | ✅           | ✅    | ❌       |
-| DELETE | `/api/employee/{id}` | Eliminar un empleado | ✅           | ✅    | ❌       |
+| GET    | `/api/employees/`     | Ver empleado         | ✅           | ✅    | ❌       |
+| GET    | `/api/employees/{id}` | Ver un empleado      | ✅           | ✅    | ❌       |
+| POST   | `/api/employees/`     | Crear empleado       | ✅           | ✅    | ❌       |
+| PUT    | `/api/employees/{id}` | Editar un empleado   | ✅           | ✅    | ❌       |
+| DELETE | `/api/employees/{id}` | Eliminar un empleado | ✅           | ✅    | ❌       |
 
 ### Digrama de caso de uso
 
 ![Módulo Auth Diagrama de casos de uso](capturas/DCEMPLOYEE.png)
+
+## 📌 Módulo de Libros
+
+Incluye los siguientes endpoints:
+
+- `GET /api/books` - Listar libros (con filtros por Name, Author, ISBN, GenreId. Paginar con Page - PageSize por defecto de 10)
+- `GET /api/books/{id}` - Obtener libro por ID
+- `POST /api/books` - Crear libro (Admin)
+- `PUT /api/books/{id}` - Actualizar libro (Admin) si se suben imágenes al editar, se eliminan las actuales y se intercambian por las nuevas
+- `DELETE /api/books/{id}` - Eliminar libro (Admin)
+
+**Imágenes**:
+- `DELETE /api/books/{bookId}/images/{imageId}` - Eliminar imagen específica (Admin)
+- `DELETE /api/books/{bookId}/images` - Eliminar todas las imágenes de un libro (Admin)
+
+![Módulo Generos Swagger](capturas/DOCBOOK.png)
+
+### 🔐 Endpoints principales
+
+### 📌 Módulo Libros (/api/book)
+
+| Método | Ruta                 | Descripción          | Requiere JWT | Admin | Employee |
+| ------ | -------------------- | -------------------- | ------------ | ----- | -------- |
+| GET    | `/api/books/`     | Ver libros             | ✅           | ✅    | ✅       |
+| GET    | `/api/books/{id}` | Ver un libro          | ✅           | ✅    | ✅       |
+| POST   | `/api/books/`     | Crear libro        | ✅           | ✅    | ❌       |
+| PUT    | `/api/books/{id}` | Editar un libro      | ✅           | ✅    | ❌       |
+| DELETE | `/api/books/{id}` | Eliminar un libro     | ✅           | ✅    | ❌       |
+| DELETE | `/api/books/{bookId}/images/{imageId}` | Eliminar imagen específica | ✅           | ✅    | ❌       |
+| DELETE | `/api/books/{bookId}/images` | Eliminar todas las imágenes de un libro | ✅           | ✅    | ❌       |
+
+### Digrama de caso de uso
+
+![Módulo Auth Diagrama de casos de uso](capturas/DCBOOK.png)
 
 ## 📦 Instalación y configuración
 

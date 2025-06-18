@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API_BITLIBRO.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/employees")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     public class EmployeeController : ControllerBase
