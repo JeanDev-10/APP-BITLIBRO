@@ -2,13 +2,14 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API_BITLIBRO.Services;
 
-public class TokenService
+public class TokenService:ITokenService
 
 {
     private readonly IConfiguration _config;

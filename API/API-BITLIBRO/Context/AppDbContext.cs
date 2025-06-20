@@ -15,6 +15,7 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Book> Books { get; set; }
     public DbSet<BookGenre> BookGenres { get; set; }
     public DbSet<Image> Images { get; set; }
+    public DbSet<Reservation> Reservations { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder); // Esto es CRUCIAL para Identity
@@ -51,6 +52,19 @@ public class AppDbContext : IdentityDbContext<User>
             .HasOne(i => i.Book)
             .WithMany(b => b.Images)
             .HasForeignKey(i => i.BookId);
+        //relacion explicita entre employee client del modelo user
+        modelBuilder.Entity<Reservation>(entity =>
+        {
+            entity.HasOne(r => r.Employee)
+                .WithMany()
+                .HasForeignKey(r => r.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(r => r.Client)
+                .WithMany()
+                .HasForeignKey(r => r.ClientId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
 
     }
 }

@@ -1,4 +1,7 @@
+using API_BITLIBRO.DTOs;
+using API_BITLIBRO.DTOs.ApiResponse;
 using API_BITLIBRO.DTOs.Book;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -11,15 +14,15 @@ namespace API_BITLIBRO.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly BookService _bookService;
+        private readonly IBookService _bookService;
         private readonly IValidator<CreateBookDTO> _createValidator;
         private readonly IValidator<UpdateBookDTO> _updateValidator;
-        private readonly ImageService _imageService;
+        private readonly IImageService _imageService;
 
         public BookController(
-            BookService bookService,
+            IBookService bookService,
             IValidator<CreateBookDTO> createValidator,
-            IValidator<UpdateBookDTO> updateValidator, ImageService imageService)
+            IValidator<UpdateBookDTO> updateValidator, IImageService imageService)
         {
             _bookService = bookService;
             _createValidator = createValidator;
@@ -29,26 +32,18 @@ namespace API_BITLIBRO.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Employee")]
-        public async Task<IActionResult> GetAll([FromQuery] QueryParamsBookDTO queryParams)
+        public async Task<ActionResult<ApiResponseData<PagedResponse<ResponseBookDTO>>>> GetAll([FromQuery] QueryParamsBookDTO queryParams)
         {
             var result = await _bookService.GetAllBooksAsync(queryParams);
-            return Ok(new 
-            {
-                message = "Libros obtenidos correctamente",
-                data = result
-            });
+            return Ok(ApiResponseData<PagedResponse<ResponseBookDTO>>.Success(result, "Libros obtenidos correctamente"));
         }
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,Employee")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<ActionResult<ApiResponseData<ResponseBookDTO>>> GetById(int id)
         {
             var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null) return NotFound();
-            return Ok(new
-            {
-                message = "Libro obtenido correctamente",
-                data = book
-            });
+            if (book == null) return NotFound(ApiResponse.Fail("Libro no encontrado"));
+            return Ok(ApiResponseData<ResponseBookDTO>.Success(book, "Libro obtenido exitosamente"));
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -58,7 +53,7 @@ namespace API_BITLIBRO.Controllers
             if (!validationResult.IsValid)
             {
                 var errores = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errores });
+                return BadRequest(ApiResponseData<List<string>>.Fail("Errores de validación", errores));
             }
 
             try
@@ -66,36 +61,47 @@ namespace API_BITLIBRO.Controllers
                 var newBook = await _bookService.CreateBookAsync(createDto);
                 return CreatedAtAction(nameof(GetById), new { id = newBook.Id }, newBook);
             }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ApiResponseData<string>.Fail("Errores de validación", ex.Message));
+
+            }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse.Fail(ex.Message));
             }
+
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(int id, [FromForm] UpdateBookDTO updateDto)
+        public async Task<ActionResult<ApiResponseData<ResponseBookDTO>>> Update(int id, [FromForm] UpdateBookDTO updateDto)
         {
             if (updateDto.Id != id)
             {
-                return BadRequest("El ID del libro no coincide con el ID en el cuerpo de la solicitud.");
+                return BadRequest(ApiResponse.Fail("El ID del libro no coincide con el ID en el cuerpo de la solicitud."));
             }
             var validationResult = await _updateValidator.ValidateAsync(updateDto);
             if (!validationResult.IsValid)
             {
                 var errores = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errores });
+                return BadRequest(ApiResponseData<List<string>>.Fail("Errores de validación", errores));
             }
 
             try
             {
                 var updatedBook = await _bookService.UpdateBookAsync(updateDto);
-                if (updatedBook == null) return NotFound();
-                return Ok(updatedBook);
+                if (updatedBook == null) return NotFound(ApiResponse.Fail("Libro no encontrado"));
+                return Ok(ApiResponseData<ResponseBookDTO>.Success(updatedBook, "Libro actualizado correctamente"));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ApiResponseData<string>.Fail("Errores de validación", ex.Message));
+
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse.Fail(ex.Message));
             }
         }
 
@@ -104,7 +110,7 @@ namespace API_BITLIBRO.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _bookService.DeleteBookAsync(id);
-            if (!result) return NotFound();
+            if (!result) return NotFound(ApiResponse.Fail("Libro no encontrado"));
             return NoContent();
         }
 
@@ -121,7 +127,7 @@ namespace API_BITLIBRO.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(ApiResponse.Fail(ex.Message));
             }
         }
 
@@ -138,7 +144,7 @@ namespace API_BITLIBRO.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(ApiResponse.Fail(ex.Message));
             }
         }
     }

@@ -1,13 +1,15 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using API_BITLIBRO.DTOs;
 using API_BITLIBRO.DTOs.Employee;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_BITLIBRO.Services;
 
-public class EmployeeService
+public class EmployeeService:IEmployeeService
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;

@@ -1,12 +1,13 @@
 using System;
 using API_BITLIBRO.Context;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_BITLIBRO.Services;
 
-public class ImageService
+public class ImageService:IImageService
 {
     private readonly AppDbContext _context;
     private readonly IWebHostEnvironment _environment;

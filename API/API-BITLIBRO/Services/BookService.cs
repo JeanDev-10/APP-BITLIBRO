@@ -1,20 +1,22 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using API_BITLIBRO.Context;
 using API_BITLIBRO.DTOs;
 using API_BITLIBRO.DTOs.Book;
 using API_BITLIBRO.DTOs.Genre;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using API_BITLIBRO.Validators.Book;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_BITLIBRO.Services;
 
-public class BookService
+public class BookService : IBookService
 {
     private readonly AppDbContext _context;
-    private readonly ImageService _imageService;
+    private readonly IImageService _imageService;
 
-    public BookService(AppDbContext context, ImageService imageService)
+    public BookService(AppDbContext context, IImageService imageService)
     {
         _context = context;
         _imageService = imageService;
@@ -127,7 +129,7 @@ public class BookService
             var validationResult = await imageValidator.ValidateAsync(imageDto);
             if (!validationResult.IsValid)
             {
-                throw new Exception(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+                throw new ValidationException(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
             }
         }
         using var transaction = await _context.Database.BeginTransactionAsync();
@@ -185,7 +187,7 @@ public class BookService
                 var validationResult = await imageValidator.ValidateAsync(imageDto);
                 if (!validationResult.IsValid)
                 {
-                    throw new Exception(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+                    throw new ValidationException(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
                 }
             }
         }
@@ -224,7 +226,10 @@ public class BookService
             // Procesar imágenes si se proporcionaron
             if (updateDto.Images != null && updateDto.Images.Count > 0)
             {
-                await _imageService.DeleteAllImagesAsync(book.Id);
+                if (book.Images != null && book.Images.Count > 0)
+                {
+                    await _imageService.DeleteAllImagesAsync(book.Id);
+                }
                 await _imageService.UploadImagesAsync(book.Id, updateDto.Images);
             }
             await _context.SaveChangesAsync();
@@ -234,7 +239,7 @@ public class BookService
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new Exception($"Error al crear el libro: {ex.Message}", ex); // Pasa el inner exception
+            throw new Exception($"Error al actualizar el libro: {ex.Message}", ex); // Pasa el inner exception
         }
     }
     public async Task<bool> DeleteBookAsync(int id)

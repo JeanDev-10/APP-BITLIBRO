@@ -1,6 +1,7 @@
 using System.Text;
 using API_BITLIBRO.Context;
 using API_BITLIBRO.Data;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using API_BITLIBRO.Services;
 using FluentValidation;
@@ -94,12 +95,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<TokenService>();
-builder.Services.AddScoped<GenreService>();
-builder.Services.AddScoped<EmployeeService>();
-builder.Services.AddScoped<ImageService>();
-builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddScoped<ITokenService,TokenService>();
+builder.Services.AddScoped<IGenreService,GenreService>();
+builder.Services.AddScoped<IEmployeeService,EmployeeService>();
+builder.Services.AddScoped<IImageService,ImageService>();
+builder.Services.AddScoped<IBookService,BookService>();
+builder.Services.AddScoped<IReservationService,ReservationService>();
 
 var app = builder.Build();
 

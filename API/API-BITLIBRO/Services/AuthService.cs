@@ -1,18 +1,19 @@
 using System;
 using API_BITLIBRO.DTOs.Auth.Login;
 using API_BITLIBRO.DTOs.Auth.Me;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace API_BITLIBRO.Services;
 
-public class AuthService
+public class AuthService:IAuthService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly TokenService _tokenService;
+    private readonly ITokenService _tokenService;
     public AuthService(UserManager<User> userManager,
-            SignInManager<User> signInManager, TokenService tokenService)
+            SignInManager<User> signInManager, ITokenService tokenService)
     {
         _signInManager = signInManager;
         _userManager = userManager;

@@ -1,6 +1,6 @@
 # 📚 BitLibro API
 
-**BitLibro** es una aplicación backend RESTful desarrollada en **.NET 8** con **SQL Server** que permite gestionar préstamos de libros mediante un sistema basado en roles: `Admin`, `Employee` y `Client`.
+**BitLibro** es una aplicación Fullstack RESTful desarrollada en **.NET 8** con **SQL Server** que permite gestionar préstamos de libros mediante un sistema basado en roles: `Admin`, `Employee` y `Client`.
 
 ## 🚀 Tecnologías utilizadas
 
@@ -103,8 +103,8 @@ Incluye los siguientes endpoints:
 
 ### 📌 Módulo Empleado (/api/employees)
 
-| Método | Ruta                 | Descripción          | Requiere JWT | Admin | Employee |
-| ------ | -------------------- | -------------------- | ------------ | ----- | -------- |
+| Método | Ruta                  | Descripción          | Requiere JWT | Admin | Employee |
+| ------ | --------------------- | -------------------- | ------------ | ----- | -------- |
 | GET    | `/api/employees/`     | Ver empleado         | ✅           | ✅    | ❌       |
 | GET    | `/api/employees/{id}` | Ver un empleado      | ✅           | ✅    | ❌       |
 | POST   | `/api/employees/`     | Crear empleado       | ✅           | ✅    | ❌       |
@@ -119,13 +119,14 @@ Incluye los siguientes endpoints:
 
 Incluye los siguientes endpoints:
 
-- `GET /api/books` - Listar libros (con filtros por Name, Author, ISBN, GenreId. Paginar con Page - PageSize por defecto de 10)
-- `GET /api/books/{id}` - Obtener libro por ID
+- `GET /api/books` - Listar libros (con filtros por Name, Author, ISBN, GenreId. Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
+- `GET /api/books/{id}` - Obtener libro por ID (Admin, Employee)
 - `POST /api/books` - Crear libro (Admin)
 - `PUT /api/books/{id}` - Actualizar libro (Admin) si se suben imágenes al editar, se eliminan las actuales y se intercambian por las nuevas
 - `DELETE /api/books/{id}` - Eliminar libro (Admin)
 
 **Imágenes**:
+
 - `DELETE /api/books/{bookId}/images/{imageId}` - Eliminar imagen específica (Admin)
 - `DELETE /api/books/{bookId}/images` - Eliminar todas las imágenes de un libro (Admin)
 
@@ -133,21 +134,188 @@ Incluye los siguientes endpoints:
 
 ### 🔐 Endpoints principales
 
-### 📌 Módulo Libros (/api/book)
+### 📌 Módulo Libros (/api/books)
 
-| Método | Ruta                 | Descripción          | Requiere JWT | Admin | Employee |
-| ------ | -------------------- | -------------------- | ------------ | ----- | -------- |
-| GET    | `/api/books/`     | Ver libros             | ✅           | ✅    | ✅       |
-| GET    | `/api/books/{id}` | Ver un libro          | ✅           | ✅    | ✅       |
-| POST   | `/api/books/`     | Crear libro        | ✅           | ✅    | ❌       |
-| PUT    | `/api/books/{id}` | Editar un libro      | ✅           | ✅    | ❌       |
-| DELETE | `/api/books/{id}` | Eliminar un libro     | ✅           | ✅    | ❌       |
-| DELETE | `/api/books/{bookId}/images/{imageId}` | Eliminar imagen específica | ✅           | ✅    | ❌       |
-| DELETE | `/api/books/{bookId}/images` | Eliminar todas las imágenes de un libro | ✅           | ✅    | ❌       |
+| Método | Ruta                                   | Descripción                             | Requiere JWT | Admin | Employee |
+| ------ | -------------------------------------- | --------------------------------------- | ------------ | ----- | -------- |
+| GET    | `/api/books/`                          | Ver libros                              | ✅           | ✅    | ✅       |
+| GET    | `/api/books/{id}`                      | Ver un libro                            | ✅           | ✅    | ✅       |
+| POST   | `/api/books/`                          | Crear libro                             | ✅           | ✅    | ❌       |
+| PUT    | `/api/books/{id}`                      | Editar un libro                         | ✅           | ✅    | ❌       |
+| DELETE | `/api/books/{id}`                      | Eliminar un libro                       | ✅           | ✅    | ❌       |
+| DELETE | `/api/books/{bookId}/images/{imageId}` | Eliminar imagen específica              | ✅           | ✅    | ❌       |
+| DELETE | `/api/books/{bookId}/images`           | Eliminar todas las imágenes de un libro | ✅           | ✅    | ❌       |
 
 ### Digrama de caso de uso
 
 ![Módulo Auth Diagrama de casos de uso](capturas/DCBOOK.png)
+
+## 📌 Módulo de Préstamos
+
+Incluye los siguientes endpoints:
+
+- `GET /api/reservations` - Listar reservaciones (con filtros por ClientName, EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) si soy admin se muestran todas las reservaciones, en caso de ser empleado se muestran solo las reservaciones que he realizado --> (Admin, Employee)
+- `GET /api/reservations/{id}` - Obtener reservación por ID (Admin y Employee) en el caso de Employee es siempre y cuando la reservación la haya hecho el Employee ---> (Admin, Employee)
+- `POST /api/reservations` - Crear Reservación (Employee)
+- `PUT /api/reservations/{id}` - Actualizar reservación (Admin y Employee)
+
+![Módulo Generos Swagger](capturas/DCRESERVATION.png)
+
+### 🔐 Endpoints principales
+
+### 📌 Módulo Préstamos (/api/reservations)
+
+| Método | Ruta                     | Descripción            | Requiere JWT | Admin | Employee |
+| ------ | ------------------------ | ---------------------- | ------------ | ----- | -------- |
+| GET    | `/api/reservations/`     | Listar reservaciones   | ✅           | ✅    | ✅       |
+| GET    | `/api/reservations/{id}` | Ver una reservación    | ✅           | ✅    | ✅       |
+| POST   | `/api/reservations/`     | Crear reservación      | ✅           | ❌    | ✅       |
+| PUT    | `/api/reservations/{id}` | Editar una reservación | ✅           | ✅    | ✅       |
+
+### Digrama de caso de uso
+
+![Módulo Auth Diagrama de casos de uso](capturas/DCRESERVATION.png)
+
+
+## ✅ Pruebas Manuales y Automáticas Realizadas
+### 🔐 Módulo de Autenticación
+```POST /api/auth/login```
+
+- [✔️] Errores de validación (campos requeridos vacíos)
+- [✔️] Credenciales inválidas (email o contraseña incorrecta)
+- [✔️] Login exitoso con token JWT retornado
+
+```POST /api/auth/logout```
+
+- [✔️] Logout exitoso (token invalidado)
+- [✔️] Acceso no autenticado (401)
+
+```GET /api/auth/me```
+
+- [✔️] Usuario autenticado recibe su información correctamente
+- [✔️] Usuario no autenticado recibe error 401
+
+### 🧩 Módulo de Géneros
+```GET /api/genres/{id}```
+
+- [✔️] Género encontrado exitosamente
+
+- [✔️] Género no encontrado (404)
+
+```POST /api/genres```
+
+- [✔️] Género ya existente (409 o validación fallida)
+
+- [✔️] Errores de validación (nombre vacío o muy corto)
+
+- [✔️] Creación exitosa
+
+```PUT /api/genres/{id}```
+
+- [✔️] Género ya en uso (conflicto)
+
+- [✔️] Errores de validación
+
+- [✔️] Actualización exitosa
+
+```DELETE /api/genres/{id}```
+
+- [✔️] Eliminado exitosamente
+
+- [✔️] Género no encontrado (404)
+
+### 👥 Módulo de Empleados
+```GET /api/employees/{id}```
+
+- [✔️] Empleado existente retornado correctamente
+
+- [✔️] Empleado no encontrado
+
+```POST /api/employees```
+
+- [✔️] CI ya en uso
+
+- [✔️] Email ya en uso
+
+- [✔️] Errores de validación (nombre vacío, email inválido, etc.)
+
+- [✔️] Creación exitosa
+
+```PUT /api/employees/{id}```
+
+- [✔️] Errores de validación
+
+- [✔️] CI ya en uso
+
+- [✔️] Actualización exitosa
+
+```DELETE /api/employees/{id}```
+
+- [✔️] Eliminado exitosamente
+
+- [✔️] No encontrado (404)
+
+### 📚 Módulo de Libros
+```GET /api/books/{id}```
+
+- [✔️] Libro encontrado
+
+- [✔️] Libro no existente
+
+```POST /api/books```
+
+- [✔️] Nombre ya ocupado
+
+- [✔️] ISBN ya en uso
+
+- [✔️] Género no existe
+
+- [✔️] Errores de validación
+
+- [✔️] Creación exitosa
+
+```PUT /api/books/{id}```
+
+- [✔️] Reemplazo de imágenes al actualizar
+
+- [✔️] Nombre o ISBN ya en uso
+
+- [✔️] Género no existe
+
+- [✔️] Errores de validación
+
+- [✔️] Actualización exitosa
+
+```DELETE /api/books/{id}```
+
+- [✔️] Eliminación exitosa
+
+- [✔️] Libro inexistente
+
+### 📆 Módulo de Reservaciones
+```GET /api/reservations/{id}```
+
+- [✔️] Reservación no encontrada
+
+- [✔️] Acceso exitoso para Admin o Employee asignado
+
+```POST /api/reservations```
+
+- [✔️] CI del cliente ya registrado
+
+- [✔️] Libro no existe
+
+- [✔️] Libro ya reservado en ese rango de fechas
+
+- [✔️] Validaciones fallidas
+
+- [✔️] Reservación exitosa
+
+```PUT /api/reservations/{id}```
+
+- [✔️] Actualización exitosa por Admin o Employee
+
+- [✔️] Validaciones fallidas
 
 ## 📦 Instalación y configuración
 
@@ -177,6 +345,7 @@ cd APP-BITLIBRO/API/API-BITLIBRO
 ```
 
 3. **Instala dependecias y construye**
+
 ```bash
 dotnet restore
 dotnet build
@@ -199,8 +368,10 @@ dotnet run
 Acceder a la documentación:
 Abrir en navegador: http://localhost:5188/swagger
 
-
 ---
+
 ## Autor
+
 - [Jean Pierre Rodríguez Zambrano](https://github.com/JeanDev-10)
+
 ---

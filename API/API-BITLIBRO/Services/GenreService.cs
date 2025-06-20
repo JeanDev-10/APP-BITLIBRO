@@ -2,12 +2,13 @@ using System;
 using API_BITLIBRO.Context;
 using API_BITLIBRO.DTOs;
 using API_BITLIBRO.DTOs.Genre;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_BITLIBRO.Services;
 
-public class GenreService
+public class GenreService:IGenreService
 {
     private readonly AppDbContext _context;
 

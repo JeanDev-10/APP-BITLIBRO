@@ -1,4 +1,7 @@
+using API_BITLIBRO.DTOs;
+using API_BITLIBRO.DTOs.ApiResponse;
 using API_BITLIBRO.DTOs.Employee;
+using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using API_BITLIBRO.Services;
 using API_BITLIBRO.Validators.Employee;
@@ -15,11 +18,11 @@ namespace API_BITLIBRO.Controllers
     [Authorize(Roles = "Admin")]
     public class EmployeeController : ControllerBase
     {
-        private readonly EmployeeService _employeeService;
+        private readonly IEmployeeService _employeeService;
         private readonly IValidator<CreateEmployeeDTO> _createValidator;
         private readonly IValidator<UpdateEmployeeDTO> _updateValidator;
         public EmployeeController(
-          EmployeeService employeeService,
+          IEmployeeService employeeService,
           IValidator<CreateEmployeeDTO> createValidator,
           IValidator<UpdateEmployeeDTO> updateValidator
           )
@@ -29,26 +32,17 @@ namespace API_BITLIBRO.Controllers
             _updateValidator = updateValidator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] EmployeeQueryParams queryParams)
+        public async Task<ActionResult<ApiResponseData<PagedResponse<EmployeeResponseDTO>>>> GetAll([FromQuery] EmployeeQueryParams queryParams)
         {
             var result = await _employeeService.GetAllEmployeesAsync(queryParams);
-            return Ok(new
-            {
-                message = "Empleados obtenidos correctamente",
-                data = result
-            });
+            return Ok(ApiResponseData<PagedResponse<EmployeeResponseDTO>>.Success(result, "Empleados obtenidos correctamente"));
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id)
+        public async Task<ActionResult<ApiResponseData<EmployeeResponseDTO>>> GetById(string id)
         {
             var employee = await _employeeService.GetEmployeeByIdAsync(id);
-            if (employee == null) return NotFound();
-
-            return Ok(new
-            {
-                message = "Empleado obtenido correctamente",
-                data = employee
-            });
+            if (employee == null) return NotFound(ApiResponse.Fail("Empleado no encontrado"));
+            return Ok(ApiResponseData<EmployeeResponseDTO>.Success(employee, "Empleado obtenido correctamente"));
         }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEmployeeDTO createDto)
@@ -59,41 +53,41 @@ namespace API_BITLIBRO.Controllers
             if (!validationResult.IsValid)
             {
                 var errores = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errores });
+                return BadRequest(ApiResponseData<List<string>>.Fail("Errores de validación", errores));
             }
             try
             {
                 var newEmployee = await _employeeService.CreateEmployeeAsync(createDto);
-                return CreatedAtAction(nameof(GetById), new { id = newEmployee.Id }, newEmployee);
+                return CreatedAtAction(nameof(GetById), new { id = newEmployee.Id },newEmployee);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ApiResponse.Fail(ex.Message));
             }
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateEmployeeDTO updateDto)
+        public async Task<ActionResult<ApiResponseData<EmployeeResponseDTO>>> Update(string id, [FromBody] UpdateEmployeeDTO updateDto)
         {
             if (id != updateDto.Id)
             {
-                return BadRequest("El ID del empleado no coincide con el ID en el cuerpo de la solicitud.");
+                return BadRequest(ApiResponse.Fail("El ID del empleado no coincide con el ID en el cuerpo de la solicitud."));
             }
             var validationResult = await _updateValidator.ValidateAsync(updateDto);
             if (!validationResult.IsValid)
             {
                 var errores = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errores });
+                return BadRequest(ApiResponseData<List<string>>.Fail("Errores de validación", errores));
             }
 
             try
             {
                 var updatedEmployee = await _employeeService.UpdateEmployeeAsync(updateDto);
-                if (updatedEmployee == null) return NotFound();
-                return Ok(updatedEmployee);
+                if (updatedEmployee == null) return NotFound(ApiResponse.Fail("Empleado no encontrado"));
+                return Ok(ApiResponseData<EmployeeResponseDTO>.Success(updatedEmployee, "Empleado actualizado correctamente"));
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ApiResponse.Fail(ex.Message));
             }
         }
 
@@ -101,7 +95,7 @@ namespace API_BITLIBRO.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _employeeService.DeleteEmployeeAsync(id);
-            if (!result) return NotFound();
+            if (!result) return NotFound(ApiResponse.Fail("Empleado no encontrado"));
 
             return NoContent();
         }
