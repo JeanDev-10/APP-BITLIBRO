@@ -56,12 +56,12 @@ public class AppDbContext : IdentityDbContext<User>
         modelBuilder.Entity<Reservation>(entity =>
         {
             entity.HasOne(r => r.Employee)
-                .WithMany()
+                .WithMany(u => u.ReservationsAsEmployee)
                 .HasForeignKey(r => r.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(r => r.Client)
-                .WithMany()
+                .WithMany(u => u.ReservationsAsClient)
                 .HasForeignKey(r => r.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
         });

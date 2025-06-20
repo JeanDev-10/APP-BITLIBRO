@@ -93,6 +93,7 @@ Incluye los siguientes endpoints:
 
 - `GET /api/employees`: Ver empleados (se puede filtar por Name, LastName y paginar con Page - PageSize ).
 - `GET /api/employees/{id}`: Ver un empleado .
+- `GET /api/employees/{id}/reservations`: Ver reservas realizadas por un empleado (se puede filtar por ClientName, Status y paginar con Page - PageSize ) .
 - `POST /api/employees`: Crear empleado con validación usando FluentValidation.
 - `PUT /api/employees/{id}`: Editar empleado con validación usando FluentValidation.
 - `DELETE /api/employees/{id}`: Eliminar empleado.
@@ -103,13 +104,14 @@ Incluye los siguientes endpoints:
 
 ### 📌 Módulo Empleado (/api/employees)
 
-| Método | Ruta                  | Descripción          | Requiere JWT | Admin | Employee |
-| ------ | --------------------- | -------------------- | ------------ | ----- | -------- |
-| GET    | `/api/employees/`     | Ver empleado         | ✅           | ✅    | ❌       |
-| GET    | `/api/employees/{id}` | Ver un empleado      | ✅           | ✅    | ❌       |
-| POST   | `/api/employees/`     | Crear empleado       | ✅           | ✅    | ❌       |
-| PUT    | `/api/employees/{id}` | Editar un empleado   | ✅           | ✅    | ❌       |
-| DELETE | `/api/employees/{id}` | Eliminar un empleado | ✅           | ✅    | ❌       |
+| Método | Ruta                               | Descripción                              | Requiere JWT | Admin | Employee |
+| ------ | ---------------------------------- | ---------------------------------------- | ------------ | ----- | -------- |
+| GET    | `/api/employees/`                  | Ver empleado                             | ✅           | ✅    | ❌       |
+| GET    | `/api/employees/{id}`              | Ver un empleado                          | ✅           | ✅    | ❌       |
+| GET    | `/api/employees/{id}/reservations` | Ver reservaciones hechas por un empleado | ✅           | ✅    | ❌       |
+| POST   | `/api/employees/`                  | Crear empleado                           | ✅           | ✅    | ❌       |
+| PUT    | `/api/employees/{id}`              | Editar un empleado                       | ✅           | ✅    | ❌       |
+| DELETE | `/api/employees/{id}`              | Eliminar un empleado                     | ✅           | ✅    | ❌       |
 
 ### Digrama de caso de uso
 
@@ -159,7 +161,7 @@ Incluye los siguientes endpoints:
 - `POST /api/reservations` - Crear Reservación (Employee)
 - `PUT /api/reservations/{id}` - Actualizar reservación (Admin y Employee)
 
-![Módulo Generos Swagger](capturas/DCRESERVATION.png)
+![Módulo Generos Swagger](capturas/DOCRESERVATION.png)
 
 ### 🔐 Endpoints principales
 
@@ -176,33 +178,59 @@ Incluye los siguientes endpoints:
 
 ![Módulo Auth Diagrama de casos de uso](capturas/DCRESERVATION.png)
 
+## 👥 Módulo de Clientes
+
+Incluye los siguientes endpoints:
+
+- `GET /api/clients` - Listar clientes (con filtros por EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
+- `GET /api/clients/{id}` - Obtener cliente por ID (Admin)
+- `GET /api/clients/{id}/reservations` - Obtener todas las reservaciones de un cliente por ID (con filtros por EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) --> (Admin)
+
+![Módulo Generos Swagger](capturas/DOCCLIENTS.png)
+
+### 🔐 Endpoints principales
+
+### 📌 Módulo Clientes (/api/clients)
+
+| Método | Ruta                             | Descripción                     | Requiere JWT | Admin | Employee |
+| ------ | -------------------------------- | ------------------------------- | ------------ | ----- | -------- |
+| GET    | `/api/clients/`                  | Listar clientes                 | ✅           | ✅    | ✅       |
+| GET    | `/api/clients/{id}`              | Ver un cliente                  | ✅           | ✅    | ❌       |
+| POST   | `/api/clients/{id}/reservations` | Ver reservaciones de un cliente | ✅           | ✅    | ❌       |
+
+### Digrama de caso de uso
+
+![Módulo Auth Diagrama de casos de uso](capturas/DCCLIENTS.png)
 
 ## ✅ Pruebas Manuales y Automáticas Realizadas
+
 ### 🔐 Módulo de Autenticación
-```POST /api/auth/login```
+
+`POST /api/auth/login`
 
 - [✔️] Errores de validación (campos requeridos vacíos)
 - [✔️] Credenciales inválidas (email o contraseña incorrecta)
 - [✔️] Login exitoso con token JWT retornado
 
-```POST /api/auth/logout```
+`POST /api/auth/logout`
 
 - [✔️] Logout exitoso (token invalidado)
 - [✔️] Acceso no autenticado (401)
 
-```GET /api/auth/me```
+`GET /api/auth/me`
 
 - [✔️] Usuario autenticado recibe su información correctamente
 - [✔️] Usuario no autenticado recibe error 401
 
 ### 🧩 Módulo de Géneros
-```GET /api/genres/{id}```
+
+`GET /api/genres/{id}`
 
 - [✔️] Género encontrado exitosamente
 
 - [✔️] Género no encontrado (404)
 
-```POST /api/genres```
+`POST /api/genres`
 
 - [✔️] Género ya existente (409 o validación fallida)
 
@@ -210,7 +238,7 @@ Incluye los siguientes endpoints:
 
 - [✔️] Creación exitosa
 
-```PUT /api/genres/{id}```
+`PUT /api/genres/{id}`
 
 - [✔️] Género ya en uso (conflicto)
 
@@ -218,20 +246,27 @@ Incluye los siguientes endpoints:
 
 - [✔️] Actualización exitosa
 
-```DELETE /api/genres/{id}```
+`DELETE /api/genres/{id}`
 
 - [✔️] Eliminado exitosamente
 
 - [✔️] Género no encontrado (404)
 
 ### 👥 Módulo de Empleados
-```GET /api/employees/{id}```
+
+`GET /api/employees/{id}`
 
 - [✔️] Empleado existente retornado correctamente
 
 - [✔️] Empleado no encontrado
 
-```POST /api/employees```
+`GET /api/employees/{id}/reservations`
+
+- [✔️] Empleado existente retornado correctamente paginados filtros
+
+- [✔️] Empleado no encontrado
+
+`POST /api/employees`
 
 - [✔️] CI ya en uso
 
@@ -241,7 +276,7 @@ Incluye los siguientes endpoints:
 
 - [✔️] Creación exitosa
 
-```PUT /api/employees/{id}```
+`PUT /api/employees/{id}`
 
 - [✔️] Errores de validación
 
@@ -249,20 +284,21 @@ Incluye los siguientes endpoints:
 
 - [✔️] Actualización exitosa
 
-```DELETE /api/employees/{id}```
+`DELETE /api/employees/{id}`
 
 - [✔️] Eliminado exitosamente
 
 - [✔️] No encontrado (404)
 
 ### 📚 Módulo de Libros
-```GET /api/books/{id}```
+
+`GET /api/books/{id}`
 
 - [✔️] Libro encontrado
 
 - [✔️] Libro no existente
 
-```POST /api/books```
+`POST /api/books`
 
 - [✔️] Nombre ya ocupado
 
@@ -274,7 +310,7 @@ Incluye los siguientes endpoints:
 
 - [✔️] Creación exitosa
 
-```PUT /api/books/{id}```
+`PUT /api/books/{id}`
 
 - [✔️] Reemplazo de imágenes al actualizar
 
@@ -286,20 +322,21 @@ Incluye los siguientes endpoints:
 
 - [✔️] Actualización exitosa
 
-```DELETE /api/books/{id}```
+`DELETE /api/books/{id}`
 
 - [✔️] Eliminación exitosa
 
 - [✔️] Libro inexistente
 
 ### 📆 Módulo de Reservaciones
-```GET /api/reservations/{id}```
+
+`GET /api/reservations/{id}`
 
 - [✔️] Reservación no encontrada
 
 - [✔️] Acceso exitoso para Admin o Employee asignado
 
-```POST /api/reservations```
+`POST /api/reservations`
 
 - [✔️] CI del cliente ya registrado
 
@@ -311,11 +348,25 @@ Incluye los siguientes endpoints:
 
 - [✔️] Reservación exitosa
 
-```PUT /api/reservations/{id}```
+`PUT /api/reservations/{id}`
 
 - [✔️] Actualización exitosa por Admin o Employee
 
 - [✔️] Validaciones fallidas
+
+### 👥 Módulo de Clientes
+
+`GET /api/clients/{id}`
+
+- [✔️] Cliente no encontrado
+
+- [✔️] Acceso exitoso paginado filtrado
+
+`GET /api/clients/{id}/reservations`
+
+- [✔️] Cliente no encontrado
+
+- [✔️] Acceso exitoso paginado filtrado
 
 ## 📦 Instalación y configuración
 

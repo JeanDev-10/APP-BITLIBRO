@@ -102,6 +102,7 @@ builder.Services.AddScoped<IEmployeeService,EmployeeService>();
 builder.Services.AddScoped<IImageService,ImageService>();
 builder.Services.AddScoped<IBookService,BookService>();
 builder.Services.AddScoped<IReservationService,ReservationService>();
+builder.Services.AddScoped<IClientService,ClientService>();
 
 var app = builder.Build();
 
