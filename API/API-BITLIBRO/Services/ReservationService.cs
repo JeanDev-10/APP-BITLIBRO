@@ -217,18 +217,34 @@ public class ReservationService : IReservationService
         if (overlappingReservation)
             throw new Exception("El libro ya está reservado en ese período");
 
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Ci == createDto.Ci);
-        if (user == null)
+
+        User user;
+
+        // Caso 1: Se proporcionó UserId (usuario existente)
+        if (createDto.UserId != null)
+        {
+            user = await _userManager.FindByIdAsync(createDto.UserId);
+            if (user == null)
+                throw new Exception("Usuario no encontrado");
+        }
+        // Caso 2: Se proporcionaron datos de usuario (nuevo usuario)
+        else
         {
             user = new User
             {
                 UserName = createDto.Ci,
-                Ci = createDto.Ci,
-                Name = createDto.Name,
-                LastName = createDto.LastName,
-                Email = $"{createDto.Ci}@fake.com"
+                Ci = createDto.Ci!,
+                Name = createDto.Name!,
+                LastName = createDto.LastName!,
+                Email = $"{createDto.Ci}@fake.com",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
-            await _userManager.CreateAsync(user);
+
+            var createResult = await _userManager.CreateAsync(user);
+            if (!createResult.Succeeded)
+                throw new Exception($"Error al crear usuario: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+
             await _userManager.AddToRoleAsync(user, "Client");
         }
         var reservation = new Reservation

@@ -158,7 +158,7 @@ Incluye los siguientes endpoints:
 
 - `GET /api/reservations` - Listar reservaciones (con filtros por ClientName, EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) si soy admin se muestran todas las reservaciones, en caso de ser empleado se muestran solo las reservaciones que he realizado --> (Admin, Employee)
 - `GET /api/reservations/{id}` - Obtener reservación por ID (Admin y Employee) en el caso de Employee es siempre y cuando la reservación la haya hecho el Employee ---> (Admin, Employee)
-- `POST /api/reservations` - Crear Reservación (Employee)
+- `POST /api/reservations` - Crear Reservación (Employee) Se puede pasar tanto datos completos para crear el usuario (Name,LastName y Ci) o simplemente en caso de existir pasar solo el UserId pero no ambos
 - `PUT /api/reservations/{id}` - Actualizar reservación (Admin y Employee)
 
 ![Módulo Generos Swagger](capturas/DOCRESERVATION.png)
@@ -340,13 +340,19 @@ Incluye los siguientes endpoints:
 
 - [✔️] CI del cliente ya registrado
 
+- [✔️] Error al pasar UserId y datos para registrar usuario (solo se puede pasar una opción y no ambos)
+
+- [✔️] Error Usuario no encontrado (al pasar UserId)
+
 - [✔️] Libro no existe
 
 - [✔️] Libro ya reservado en ese rango de fechas
 
 - [✔️] Validaciones fallidas
 
-- [✔️] Reservación exitosa
+- [✔️] Reservación exitosa con datos nuevos de usuario
+
+- [✔️] Reservación exitosa con UserId
 
 `PUT /api/reservations/{id}`
 

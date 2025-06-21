@@ -26,7 +26,13 @@ public class ClientService : IClientService
     }
     public async Task<PagedResponse<ClientResponseDTO>> GetUsersAsync(ClientQueryParamsDTO queryParams)
     {
-        var query = _userManager.Users.AsQueryable();
+        // Obtenemos primero los IDs de los usuarios con rol "Client"
+        var clientUserIds = await _userManager.GetUsersInRoleAsync("Client");
+        var clientIds = clientUserIds.Select(u => u.Id).ToList();
+
+        var query = _userManager.Users
+            .Where(u => clientIds.Contains(u.Id))
+            .AsQueryable();
 
         // Aplicar filtros
         if (!string.IsNullOrEmpty(queryParams.Ci))
