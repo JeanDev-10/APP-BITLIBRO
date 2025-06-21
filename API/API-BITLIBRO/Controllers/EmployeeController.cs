@@ -1,6 +1,7 @@
 using API_BITLIBRO.DTOs;
 using API_BITLIBRO.DTOs.ApiResponse;
 using API_BITLIBRO.DTOs.Employee;
+using API_BITLIBRO.DTOs.Reservation;
 using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Models;
 using API_BITLIBRO.Services;
@@ -37,6 +38,29 @@ namespace API_BITLIBRO.Controllers
             var result = await _employeeService.GetAllEmployeesAsync(queryParams);
             return Ok(ApiResponseData<PagedResponse<EmployeeResponseDTO>>.Success(result, "Empleados obtenidos correctamente"));
         }
+        [HttpGet("{id}/reservations")]
+        public async Task<ActionResult<ApiResponseData<PagedResponse<ReservationResponseDTO>>>> GetByIdWithReservations(string id, [FromQuery] EmployeeReservationQueryParamsDTO queryParams)
+        {
+            try
+            {
+
+                var reservations = await _employeeService.GetReservationsByEmployeeAsync(id, queryParams);
+                if (reservations == null) return NotFound(ApiResponse.Fail("Empleado no encontrado"));
+                return Ok(ApiResponseData<PagedResponse<ReservationResponseDTO>>.Success(reservations, "Reservaciones obtenidas"));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse.Fail(
+                            ex.Message
+                        ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse.Fail(
+                                           ex.Message
+                                       ));
+            }
+        }
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponseData<EmployeeResponseDTO>>> GetById(string id)
         {
@@ -58,7 +82,7 @@ namespace API_BITLIBRO.Controllers
             try
             {
                 var newEmployee = await _employeeService.CreateEmployeeAsync(createDto);
-                return CreatedAtAction(nameof(GetById), new { id = newEmployee.Id },newEmployee);
+                return CreatedAtAction(nameof(GetById), new { id = newEmployee.Id }, newEmployee);
             }
             catch (Exception ex)
             {
