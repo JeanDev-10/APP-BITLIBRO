@@ -154,6 +154,25 @@ public class EmployeeService : IEmployeeService
                 r.Client.Name.Contains(queryParams.ClientName) ||
                 r.Client.LastName.Contains(queryParams.ClientName));
 
+        // Filtrado por fechas
+        if (queryParams.StartDate.HasValue && queryParams.EndDate.HasValue)
+        {
+            // Filtro por rango completo
+            query = query.Where(r =>
+                r.StartDate >= queryParams.StartDate.Value &&
+                r.StartDate <= queryParams.EndDate.Value);
+        }
+        else if (queryParams.StartDate.HasValue)
+        {
+            // Solo fecha inicial (desde)
+            query = query.Where(r => r.StartDate >= queryParams.StartDate.Value);
+        }
+        else if (queryParams.EndDate.HasValue)
+        {
+            // Solo fecha final (hasta)
+            query = query.Where(r => r.StartDate <= queryParams.EndDate.Value);
+        }
+
         // Contar total antes de paginar
         var totalRecords = await query.CountAsync();
         // Aplicar paginación

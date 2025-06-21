@@ -87,6 +87,10 @@ public class ClientService : IClientService
         var query = _context.Reservations
             .Include(r => r.Employee)
             .Include(r => r.Book)
+                .ThenInclude(b => b.BookGenres)
+                    .ThenInclude(bg => bg.Genre)
+            .Include(r => r.Book)
+                .ThenInclude(b => b.Images)
             .Where(r => r.ClientId == userId)
             .AsQueryable();
 
@@ -99,6 +103,25 @@ public class ClientService : IClientService
                 r.Employee.Name.Contains(queryParams.EmployeeName) ||
                 r.Employee.LastName.Contains(queryParams.EmployeeName));
 
+
+        // Filtrado por fechas
+        if (queryParams.StartDate.HasValue && queryParams.EndDate.HasValue)
+        {
+            // Filtro por rango completo
+            query = query.Where(r =>
+                r.StartDate >= queryParams.StartDate.Value &&
+                r.StartDate <= queryParams.EndDate.Value);
+        }
+        else if (queryParams.StartDate.HasValue)
+        {
+            // Solo fecha inicial (desde)
+            query = query.Where(r => r.StartDate >= queryParams.StartDate.Value);
+        }
+        else if (queryParams.EndDate.HasValue)
+        {
+            // Solo fecha final (hasta)
+            query = query.Where(r => r.StartDate <= queryParams.EndDate.Value);
+        }
         // Contar total antes de paginar
         var totalRecords = await query.CountAsync();
 
@@ -110,33 +133,45 @@ public class ClientService : IClientService
          {
              Id = r.Id,
              Status = r.Status,
-             StartDate = r.StartDate,
-             EndDate = r.EndDate,
-             CreatedAt=r.CreatedAt,
-             UpdatedAt=r.UpdatedAt,
+             Employee = new EmployeeResponseDTO
+             {
+                 Id = r.Employee!.Id,
+                 Name = r.Employee.Name,
+                 LastName = r.Employee.LastName,
+                 Ci = r.Employee!.Ci,
+                 Email = r.Employee.Email!,
+                 CreatedAt = r.Employee.CreatedAt,
+                 UpdatedAt = r.Employee.UpdatedAt
+             },
              Book = new ResponseBookDTO
              {
                  Id = r.Book!.Id,
                  Name = r.Book.Name,
                  ISBN = r.Book.ISBN,
-                 Author = r.Book.Author,
                  YearPublished = r.Book.YearPublished,
                  Editorial = r.Book.Editorial,
-                 CreatedAt=r.Book.CreatedAt,
-                 UpdatedAt=r.Book.UpdatedAt,
+                 Author = r.Book.Author,
+                 CreatedAt = r.Book.CreatedAt,
+                 UpdatedAt = r.Book.UpdatedAt,
+                 Genres = r.Book.BookGenres!.Select(bg => new GenreResponseDto
+                 {
+                     Id = bg.Genre!.Id,
+                     Name = bg.Genre.Name,
+                     CreatedAt = bg.Genre.CreatedAt,
+                     UpdatedAt = bg.Genre.UpdatedAt
+                 }).ToList(),
+                 ImageUrls = r.Book.Images!.Select(i => new ResponseImageDTO
+                 {
+                     Id = i.Id,
+                     Url = i.Url
+                 }).ToList()
              },
-             Employee = new EmployeeResponseDTO
-             {
-                 Id = r.Employee.Id,
-                 Name = r.Employee.Name,
-                 LastName = r.Employee.LastName,
-                 Ci = r.Employee.Ci,
-                 Email = r.Employee.Email,
-                 CreatedAt = r.Employee.CreatedAt,
-                 UpdatedAt = r.Employee.UpdatedAt,
-             }
+             StartDate = r.StartDate,
+             EndDate = r.EndDate,
+             CreatedAt = r.CreatedAt,
+             UpdatedAt = r.UpdatedAt
          })
-         .ToListAsync();
+            .ToListAsync();
         return new PagedResponse<ReservationResponseDTO>
         {
             Data = reservations,

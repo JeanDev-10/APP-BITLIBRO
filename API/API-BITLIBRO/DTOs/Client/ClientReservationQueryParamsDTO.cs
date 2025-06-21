@@ -8,4 +8,6 @@ public class ClientReservationQueryParamsDTO
     public int PageSize { get; set; } = 10;
     public string? Status { get; set; }
     public string? EmployeeName { get; set; }
+    public DateTime? StartDate { get; set; } // Filtro fecha inicial
+    public DateTime? EndDate { get; set; } // Filtro fecha final
 }

@@ -93,7 +93,7 @@ Incluye los siguientes endpoints:
 
 - `GET /api/employees`: Ver empleados (se puede filtar por Name, LastName y paginar con Page - PageSize ).
 - `GET /api/employees/{id}`: Ver un empleado .
-- `GET /api/employees/{id}/reservations`: Ver reservas realizadas por un empleado (se puede filtar por ClientName, Status y paginar con Page - PageSize ) .
+- `GET /api/employees/{id}/reservations`: Ver reservas realizadas por un empleado (se puede filtar por ClientName, Status, startDate y endDate (si solo se pasa el startDate es desde, sí solo e pasa el endDate es hasta pero si se pasan ambos parametros es entre un rango de fechas el filtro) y paginar con Page - PageSize ) .
 - `POST /api/employees`: Crear empleado con validación usando FluentValidation.
 - `PUT /api/employees/{id}`: Editar empleado con validación usando FluentValidation.
 - `DELETE /api/employees/{id}`: Eliminar empleado.
@@ -184,7 +184,7 @@ Incluye los siguientes endpoints:
 
 - `GET /api/clients` - Listar clientes (con filtros por EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
 - `GET /api/clients/{id}` - Obtener cliente por ID (Admin)
-- `GET /api/clients/{id}/reservations` - Obtener todas las reservaciones de un cliente por ID (con filtros por EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) --> (Admin)
+- `GET /api/clients/{id}/reservations` - Obtener todas las reservaciones de un cliente por ID (con filtros por EmployeeName, Status, startDate y endDate (si solo se pasa el startDate es desde, sí solo e pasa el endDate es hasta pero si se pasan ambos parametros es entre un rango de fechas el filtro) . Paginar con Page - PageSize por defecto de 10) --> (Admin)
 
 ![Módulo Generos Swagger](capturas/DOCCLIENTS.png)
 
