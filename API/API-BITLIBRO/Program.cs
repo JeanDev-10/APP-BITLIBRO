@@ -105,6 +105,7 @@ builder.Services.AddScoped<IReservationService,ReservationService>();
 builder.Services.AddScoped<IClientService,ClientService>();
 //bind of repositories
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 var app = builder.Build();
 

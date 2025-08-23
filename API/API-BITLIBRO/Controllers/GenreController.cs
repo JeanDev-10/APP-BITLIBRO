@@ -55,6 +55,10 @@ namespace API_BITLIBRO.Controllers
                 var newGenre = await _genreService.CreateGenreAsync(createDto);
                 return CreatedAtAction(nameof(GetById), new { id = newGenre.Id }, newGenre);
             }
+            catch (InvalidOperationException ex) // <- unicidad controlada por Service
+            {
+                return Conflict(ApiResponse.Fail(ex.Message));
+            }
             catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("UNIQUE") == true)
             {
                 return Conflict(ApiResponse.Fail("El nombre del género ya existe"));
@@ -82,7 +86,11 @@ namespace API_BITLIBRO.Controllers
             {
                 var updatedGenre = await _genreService.UpdateGenreAsync(updateDto);
                 if (updatedGenre == null) return NotFound(ApiResponse.Fail("Género no encontrado"));
-                return Ok(ApiResponseData<GenreResponseDto>.Success(updatedGenre,"Genero actualizado exitosamente"));
+                return Ok(ApiResponseData<GenreResponseDto>.Success(updatedGenre, "Genero actualizado exitosamente"));
+            }
+            catch (InvalidOperationException ex) 
+            {
+                return Conflict(ApiResponse.Fail(ex.Message));
             }
             catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("UNIQUE") == true)
             {

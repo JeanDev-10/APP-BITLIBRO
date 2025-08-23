@@ -3,60 +3,48 @@ using API_BITLIBRO.Context;
 using API_BITLIBRO.DTOs;
 using API_BITLIBRO.DTOs.Genre;
 using API_BITLIBRO.Interfaces;
+using API_BITLIBRO.Interfaces.Repositories;
 using API_BITLIBRO.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_BITLIBRO.Services;
 
-public class GenreService:IGenreService
+public class GenreService : IGenreService
 {
-    private readonly AppDbContext _context;
+    private readonly IGenreRepository _repo;
 
-    public GenreService(AppDbContext context)
+    public GenreService(IGenreRepository repo)
     {
-        _context = context;
+        _repo = repo;
     }
 
 
     public async Task<PagedResponse<GenreResponseDto>> GetAllGenresAsync(GenreQueryParams queryParams)
     {
-        var query = _context.Genres.AsQueryable();
+        var (items, total) = await _repo.GetPagedAsync(queryParams.Name, queryParams.Page, queryParams.PageSize);
 
-        if (!string.IsNullOrEmpty(queryParams.Name))
+        var dtos = items.Select(g => new GenreResponseDto
         {
-            query = query.Where(g => g.Name.Contains(queryParams.Name));
-        }
-
-        var totalRecords = await query.CountAsync();
-
-        var genres = await query
-            .OrderBy(g => g.Name)
-            .Skip((queryParams.Page - 1) * queryParams.PageSize)
-            .Take(queryParams.PageSize)
-            .Select(g => new GenreResponseDto
-            {
-                Id = g.Id,
-                Name = g.Name,
-                CreatedAt = g.CreatedAt,
-                UpdatedAt = g.UpdatedAt
-            })
-            .ToListAsync();
-
+            Id = g.Id,
+            Name = g.Name,
+            CreatedAt = g.CreatedAt,
+            UpdatedAt = g.UpdatedAt
+        }).ToList();
         return new PagedResponse<GenreResponseDto>
         {
-            Data = genres,
+            Data = dtos,
             Page = queryParams.Page,
             PageSize = queryParams.PageSize,
-            TotalRecords = totalRecords,
-            TotalPages = (int)Math.Ceiling(totalRecords / (double)queryParams.PageSize)
+            TotalRecords = total,
+            TotalPages = (int)Math.Ceiling(total / (double)queryParams.PageSize)
         };
     }
 
     public async Task<GenreResponseDto> GetGenreByIdAsync(int id)
     {
-        var genre = await _context.Genres.FindAsync(id);
+        var genre = await _repo.GetByIdAsync(id);
 
-        if (genre == null) return null;
+        if (genre is null) return null;
 
         return new GenreResponseDto
         {
@@ -69,13 +57,18 @@ public class GenreService:IGenreService
 
     public async Task<GenreResponseDto> CreateGenreAsync(CreateGenreDTO createDto)
     {
+        // Regla de unicidad en Service
+        if (await _repo.ExistsByNameAsync(createDto.Name))
+            throw new InvalidOperationException("El nombre del género ya existe");
+
         var genre = new Genre
         {
             Name = createDto.Name
+            // CreatedAt/UpdatedAt pueden tener default en el modelo/DB
         };
 
-        _context.Genres.Add(genre);
-        await _context.SaveChangesAsync();
+        await _repo.AddAsync(genre);
+        await _repo.SaveChangesAsync();
 
         return new GenreResponseDto
         {
@@ -87,13 +80,17 @@ public class GenreService:IGenreService
     }
     public async Task<GenreResponseDto> UpdateGenreAsync(UpdateGenreDTO updateDto)
     {
-        var genre = await _context.Genres.FindAsync(updateDto.Id);
-        if (genre == null) return null;
+        var genre = await _repo.GetByIdAsync(updateDto.Id);
+        if (genre is null) return null;
+
+        if (await _repo.ExistsByNameAsync(updateDto.Name, excludingId: updateDto.Id))
+            throw new InvalidOperationException("El nombre del género ya existe");
 
         genre.Name = updateDto.Name;
         genre.UpdatedAt = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await _repo.UpdateAsync(genre);
+        await _repo.SaveChangesAsync();
 
         return new GenreResponseDto
         {
@@ -105,12 +102,11 @@ public class GenreService:IGenreService
     }
     public async Task<bool> DeleteGenreAsync(int id)
     {
-        var genre = await _context.Genres.FindAsync(id);
-        if (genre == null) return false;
+        var genre = await _repo.GetByIdAsync(id);
+        if (genre is null) return false;
 
-        _context.Genres.Remove(genre);
-        await _context.SaveChangesAsync();
-
+        await _repo.DeleteAsync(genre);
+        await _repo.SaveChangesAsync();
         return true;
     }
 }
