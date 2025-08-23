@@ -161,3 +161,138 @@ Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
 DELETE {{API_BITLIBRO_HostAddress}}/api/genres/9999
 Accept: application/json
 Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 👥 MÓDULO DE EMPLEADOS
+
+### [GET] Todos los empleados paginados y filtrados (admin)
+GET {{API_BITLIBRO_HostAddress}}/api/employees?page=1&pageSize=10&search=Juan
+Accept: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### [GET] Todos los empleados - intento con token de employee (no autorizado)
+GET {{API_BITLIBRO_HostAddress}}/api/employees
+Accept: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenEmployee}}
+
+### [GET] Empleado por ID - existente
+GET {{API_BITLIBRO_HostAddress}}/api/employees/ef1cbce4-aafe-4861-9f48-582928693531
+Accept: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### [GET] Empleado por ID - no encontrado
+GET {{API_BITLIBRO_HostAddress}}/api/employees/9999
+Accept: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### [GET] Reservas del empleado - paginado y filtrado (existente)
+GET {{API_BITLIBRO_HostAddress}}/api/employees/ef1cbce4-aafe-4861-9f48-582928693531/reservations?page=1&pageSize=5
+Accept: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### [GET] Reservas del empleado - no encontrado
+GET {{API_BITLIBRO_HostAddress}}/api/employees/9999/reservations
+Accept: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### [POST] Crear empleado - CI ya en uso
+POST {{API_BITLIBRO_HostAddress}}/api/employees
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+{
+  "email": "nuevo1@example.com",
+  "password": "Admin123!",
+  "name": "Empleado CI Repetido",
+  "lastName": "Test",
+  "ci": "1234567890"
+}
+
+### [POST] Crear empleado - Email ya en uso
+POST {{API_BITLIBRO_HostAddress}}/api/employees
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+{
+  "email": "employee@example.com",
+  "password": "Admin123!",
+  "name": "Empleado Email Repetido",
+  "lastName": "Test",
+  "ci": "9999999999"
+}
+
+### [POST] Crear empleado - Errores de validación
+POST {{API_BITLIBRO_HostAddress}}/api/employees
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+{
+  "email": "correo_mal",
+  "password": "",
+  "name": "",
+  "lastName": "Test",
+  "ci": ""
+}
+
+### [POST] Crear empleado - Creación exitosa
+POST {{API_BITLIBRO_HostAddress}}/api/employees
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+{
+  "email": "nuevoempleado@example.com",
+  "password": "Admin123!",
+  "name": "Nuevo",
+  "lastName": "Empleado",
+  "ci": "2345678901"
+}
+
+### [PUT] Actualizar empleado - CI ya en uso
+PUT {{API_BITLIBRO_HostAddress}}/api/employees/ef1cbce4-aafe-4861-9f48-582928693531
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+{
+  "id":"ef1cbce4-aafe-4861-9f48-582928693531",
+  "ci": "1234567890"
+}
+
+### [PUT] Actualizar empleado - Errores de validación
+PUT {{API_BITLIBRO_HostAddress}}/api/employees/ef1cbce4-aafe-4861-9f48-582928693531
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+{
+  "id":"ef1cbce4-aafe-4861-9f48-582928693531",
+  "email": "mal_formato"
+}
+
+### [PUT] Actualizar empleado - Actualización exitosa
+PUT {{API_BITLIBRO_HostAddress}}/api/employees/ef1cbce4-aafe-4861-9f48-582928693531
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+{
+  "id":"ef1cbce4-aafe-4861-9f48-582928693531",
+  "name": "Empleado Actualizado",
+ "lastName": "Empleado",
+  "ci": "2345678901"
+
+}
+
+### [DELETE] Eliminar empleado - exitoso
+DELETE {{API_BITLIBRO_HostAddress}}/api/employees/ef1cbce4-aafe-4861-9f48-582928693531
+Accept: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### [DELETE] Eliminar empleado - no encontrado
+DELETE {{API_BITLIBRO_HostAddress}}/api/employees/9999
+Accept: application/json
+Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
+
