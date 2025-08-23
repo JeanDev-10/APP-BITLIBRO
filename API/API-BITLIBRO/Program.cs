@@ -2,7 +2,9 @@ using System.Text;
 using API_BITLIBRO.Context;
 using API_BITLIBRO.Data;
 using API_BITLIBRO.Interfaces;
+using API_BITLIBRO.Interfaces.Repositories;
 using API_BITLIBRO.Models;
+using API_BITLIBRO.Repositories;
 using API_BITLIBRO.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -15,9 +17,6 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseWebRoot("wwwroot");
-
-
-
 
 // Add services to the container.
 
@@ -95,6 +94,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+//bind of services
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<ITokenService,TokenService>();
 builder.Services.AddScoped<IGenreService,GenreService>();
@@ -103,6 +103,8 @@ builder.Services.AddScoped<IImageService,ImageService>();
 builder.Services.AddScoped<IBookService,BookService>();
 builder.Services.AddScoped<IReservationService,ReservationService>();
 builder.Services.AddScoped<IClientService,ClientService>();
+//bind of repositories
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 var app = builder.Build();
 

@@ -2,35 +2,25 @@ using System;
 using API_BITLIBRO.DTOs.Auth.Login;
 using API_BITLIBRO.DTOs.Auth.Me;
 using API_BITLIBRO.Interfaces;
-using API_BITLIBRO.Models;
-using Microsoft.AspNetCore.Identity;
+using API_BITLIBRO.Interfaces.Repositories;
 
 namespace API_BITLIBRO.Services;
 
 public class AuthService:IAuthService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
     private readonly ITokenService _tokenService;
-    public AuthService(UserManager<User> userManager,
-            SignInManager<User> signInManager, ITokenService tokenService)
+    private readonly IAuthRepository _authRepository;
+    public AuthService(IAuthRepository authRepository, ITokenService tokenService)
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
         _tokenService = tokenService;
+        _authRepository = authRepository;
     }
     public async Task<LoginResponseDTO> LoginAsync(LoginDTO loginDTO)
     {
-        var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+        var user = await _authRepository.FindByEmailAsync(loginDTO.Email);
 
-        if (user == null)
+        if (user == null || _authRepository.CheckPasswordAsync(user, loginDTO.Password).Result == false)
             throw new UnauthorizedAccessException("Credenciales inválidas");
-
-        var result = await _signInManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
-
-        if (!result.Succeeded)
-            throw new UnauthorizedAccessException("Credenciales inválidas");
-
         var token = await _tokenService.GenerateToken(user);
         return new LoginResponseDTO
         {
@@ -42,24 +32,24 @@ public class AuthService:IAuthService
                 Name = user.Name,
                 LastName = user.LastName,
                 Ci = user.Ci,
-                Roles = (await _userManager.GetRolesAsync(user)).ToList()
+                Roles = (await _authRepository.GetRolesAsync(user)).ToList()
             }
         };
     }
 
     public async Task LogoutAsync()
     {
-        await _signInManager.SignOutAsync();
+        await _authRepository.SignOutAsync();
     }
 
     public async Task<UserInfoDTO> GetUserInfoAsync(string userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _authRepository.FindByIdAsync(userId);
 
         if (user == null)
             throw new KeyNotFoundException("Usuario no encontrado");
 
-        var roles = await _userManager.GetRolesAsync(user);
+        var roles = await _authRepository.GetRolesAsync(user);
 
         return new UserInfoDTO
         {

@@ -1,8 +1,30 @@
-@API_BITLIBRO_HostAddress= http://localhost:5188
-@API_BIT_LIBRO_AccessTokenAdmin=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwibmFtZWlkIjoiNjgyNDczODYtYWM2ZC00MGRjLTgwMDgtMzUwOWI3YjZjYmEyIiwibGFzdG5hbWUiOiJTeXN0ZW0iLCJjaSI6IjEzMTEyMjAyMTEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0MjAwIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTE4OCIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MDM4NzgxNywiZXhwIjoxNzUwMzkxNDE3LCJpYXQiOjE3NTAzODc4MTd9.d80fFTMJaKU4PAMbEkhOYtsZczD9cplQPbxE4-euWyU
+@API_BITLIBRO_HostAddress=http://localhost:5188
+@API_BIT_LIBRO_AccessTokenAdmin=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwibmFtZWlkIjoiMTEzYjZjMmItMzlmNi00ZWIxLWI2NTMtYjEwYTk2MTRiMDFlIiwibGFzdG5hbWUiOiJTeXN0ZW0iLCJjaSI6IjEzMTEyMjAyMTEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0MjAwIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTE4OCIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NTk4NDQ4MiwiZXhwIjoxNzU1OTg4MDgyLCJpYXQiOjE3NTU5ODQ0ODJ9.zgBq75ZSgIZaWUGa6jyR-_EDadwf0ZY7lzI51PQy8pc
 @API_BIT_LIBRO_AccessTokenEmployee=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtcGxveWVlQGV4YW1wbGUuY29tIiwibmFtZSI6IkVtcGxveWVlIDEiLCJuYW1laWQiOiJkNGEyN2YwNC1jYjlkLTQxMzctYTNlMC0wMjZkOTUwODk2YjgiLCJsYXN0bmFtZSI6IkVtcGxveWVlIiwiY2kiOiIxMjM0NTY3ODkwIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDIwMCIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUxODgiLCJyb2xlIjoiRW1wbG95ZWUiLCJuYmYiOjE3NTAyNzA3MDksImV4cCI6MTc1MDI3NDMwOSwiaWF0IjoxNzUwMjcwNzA5fQ.aQ4ycndFFVO075rEJSc3B1HaHFJnctmXq_g7MYbj3-s
 
-### login admin
+### 🔐 AUTENTICACIÓN
+
+### [LOGIN] Campos requeridos vacíos
+POST {{API_BITLIBRO_HostAddress}}/api/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": ""
+}
+
+### [LOGIN] Credenciales inválidas
+POST {{API_BITLIBRO_HostAddress}}/api/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "invalido@example.com",
+  "password": "contrasenaI1#"
+}
+
+### [LOGIN] Login exitoso (admin)
 POST {{API_BITLIBRO_HostAddress}}/api/auth/login
 Accept: application/json
 Content-Type: application/json
@@ -12,8 +34,7 @@ Content-Type: application/json
   "password": "Admin123!"
 }
 
-### login employee
-
+### [LOGIN] Login exitoso (employee)
 POST {{API_BITLIBRO_HostAddress}}/api/auth/login
 Accept: application/json
 Content-Type: application/json
@@ -23,52 +44,25 @@ Content-Type: application/json
   "password": "Admin123!"
 }
 
-
-
-### register employee (admin)
-
-POST {{API_BITLIBRO_HostAddress}}/api/employees
+### [LOGOUT] Logout exitoso (admin)
+POST {{API_BITLIBRO_HostAddress}}/api/auth/logout
 Accept: application/json
-Content-Type: application/json
 Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
 
-{
-    "email": "employee@example.com",
-    "password": "Admin123!",
-    "name":"Employee 1",
-    "lastName":"Employee",
-    "ci":"1234567890"
-}
-
-### get genres (admin)
-GET {{API_BITLIBRO_HostAddress}}/api/genres
+### [LOGOUT] No autenticado
+POST {{API_BITLIBRO_HostAddress}}/api/auth/logout
 Accept: application/json
-Content-Type: application/json
+
+### [ME] Usuario autenticado (admin)
+GET {{API_BITLIBRO_HostAddress}}/api/auth/me
+Accept: application/json
 Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
 
-
-### get employee (admin)
-GET {{API_BITLIBRO_HostAddress}}/api/employees
+### [ME] Usuario autenticado (employee)
+GET {{API_BITLIBRO_HostAddress}}/api/auth/me
 Accept: application/json
-Content-Type: application/json
-Authorization: Bearer {{API_BIT_LIBRO_AccessTokenAdmin}}
-
-
-
-### get books (admin,employee) --> usando token de employee
-GET {{API_BITLIBRO_HostAddress}}/api/books
-Accept: application/json
-Content-Type: application/json
 Authorization: Bearer {{API_BIT_LIBRO_AccessTokenEmployee}}
 
-### get book (admin,employee) --> usando token de employee
-GET {{API_BITLIBRO_HostAddress}}/api/books/5
+### [ME] No autenticado
+GET {{API_BITLIBRO_HostAddress}}/api/auth/me
 Accept: application/json
-Content-Type: application/json
-Authorization: Bearer {{API_BIT_LIBRO_AccessTokenEmployee}}
-
-### delete book (admin) --> usando token de employee
-DELETE {{API_BITLIBRO_HostAddress}}/api/books/4
-Accept: application/json
-Content-Type: application/json
-Authorization: Bearer {{API_BIT_LIBRO_AccessTokenEmployee}}
