@@ -3,6 +3,7 @@ using API_BITLIBRO.Context;
 using API_BITLIBRO.Data;
 using API_BITLIBRO.Interfaces;
 using API_BITLIBRO.Interfaces.Repositories;
+using API_BITLIBRO.Interfaces.Transactions;
 using API_BITLIBRO.Models;
 using API_BITLIBRO.Repositories;
 using API_BITLIBRO.Services;
@@ -107,6 +108,10 @@ builder.Services.AddScoped<IClientService,ClientService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+// bind of unit of work to transactions
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

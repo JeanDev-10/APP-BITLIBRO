@@ -17,17 +17,15 @@ namespace API_BITLIBRO.Controllers
         private readonly IBookService _bookService;
         private readonly IValidator<CreateBookDTO> _createValidator;
         private readonly IValidator<UpdateBookDTO> _updateValidator;
-        private readonly IImageService _imageService;
 
         public BookController(
             IBookService bookService,
             IValidator<CreateBookDTO> createValidator,
-            IValidator<UpdateBookDTO> updateValidator, IImageService imageService)
+            IValidator<UpdateBookDTO> updateValidator)
         {
             _bookService = bookService;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
-            _imageService = imageService;
         }
 
         [HttpGet]
@@ -121,8 +119,7 @@ namespace API_BITLIBRO.Controllers
         {
             try
             {
-                await _imageService.DeleteImageAsync(imageId);
-
+                await _bookService.DeleteImageFromBookAsync(bookId, imageId);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
@@ -139,7 +136,7 @@ namespace API_BITLIBRO.Controllers
         {
             try
             {
-                await _imageService.DeleteAllImagesAsync(bookId);
+                await _bookService.DeleteAllImagesAsync(bookId);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)

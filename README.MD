@@ -1,6 +1,6 @@
 # 📚 BitLibro API
 
-**BitLibro** es una aplicación Fullstack RESTful desarrollada en **.NET 8** con **SQL Server** que permite gestionar préstamos de libros mediante un sistema basado en roles: `Admin`, `Employee` y `Client`.
+**BitLibro** es una aplicación **Fullstack RESTful** desarrollada con **.NET 8** y **SQL Server**, diseñada para gestionar préstamos de libros en bibliotecas o entornos educativos. El sistema implementa control de acceso basado en roles (Admin, Employee, Client) y sigue buenas prácticas de arquitectura limpia y escalable.
 
 ## 🚀 Tecnologías utilizadas
 
@@ -124,7 +124,7 @@ Incluye los siguientes endpoints:
 - `GET /api/books` - Listar libros (con filtros por Name, Author, ISBN, GenreId. Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
 - `GET /api/books/{id}` - Obtener libro por ID (Admin, Employee)
 - `POST /api/books` - Crear libro (Admin)
-- `PUT /api/books/{id}` - Actualizar libro (Admin) si se suben imágenes al editar, se eliminan las actuales y se intercambian por las nuevas
+- `PUT /api/books/{id}` - Actualizar libro (Admin) si se suben imágenes al editar, se agregan a las actuales
 - `DELETE /api/books/{id}` - Eliminar libro (Admin)
 
 **Imágenes**:

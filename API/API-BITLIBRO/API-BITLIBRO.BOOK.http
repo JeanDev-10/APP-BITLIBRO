@@ -1,0 +1,444 @@
+###  CONFIGURACIÓN GLOBAL
+@API_BITLIBRO_HostAddress=http://localhost:5188
+@API_BIT_LIBRO_AccessTokenAdmin=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwibmFtZWlkIjoiMTEzYjZjMmItMzlmNi00ZWIxLWI2NTMtYjEwYTk2MTRiMDFlIiwibGFzdG5hbWUiOiJTeXN0ZW0iLCJjaSI6IjEzMTEyMjAyMTEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0MjAwIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTE4OCIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NjAwODc1NCwiZXhwIjoxNzU2MDEyMzU0LCJpYXQiOjE3NTYwMDg3NTR9.wNqRjnlNBqVWjlG_MS6mS1nP9IjXVMlk9VuA9Wqlvf0
+@API_BIT_LIBRO_AccessTokenEmployee=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im51ZXZvMUBleGFtcGxlLmNvbSIsIm5hbWUiOiJFbXBsZWFkbyBDSSBSZXBldGlkbyIsIm5hbWVpZCI6IjVmYmM0NmMxLTU3NmItNDE5OS1hNzI2LTFkYjU1NWE2ZTc2YyIsImxhc3RuYW1lIjoiVGVzdCIsImNpIjoiMTIzNDU2Nzg5MCIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQyMDAiLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTg4Iiwicm9sZSI6IkVtcGxveWVlIiwibmJmIjoxNzU2MDA5NTQzLCJleHAiOjE3NTYwMTMxNDMsImlhdCI6MTc1NjAwOTU0M30.Ms4P5NfZte0WaylsswEGF1cVWXRQPqlUl4gxaPZFm8Y
+
+##################################################################
+###  Módulo Libros – GET /api/books/{id}
+
+### [GET] Todos los libros (con filtros por Name, Author, ISBN, GenreId. Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
+GET {{API_BITLIBRO_HostAddress}}/api/books?page=1&pageSize=10
+Accept: application/json
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+###  Libro encontrado
+GET {{API_BITLIBRO_HostAddress}}/api/books/1
+Accept: application/json
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+###  Libro no existente
+GET {{API_BITLIBRO_HostAddress}}/api/books/9999
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Accept: application/json
+
+##################################################################
+###  Módulo Libros – POST /api/books
+
+###  Nombre ya ocupado
+POST {{API_BITLIBRO_HostAddress}}/api/books
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101001
+
+-----011000010111000001101001
+Content-Disposition: form-data; name="Name"
+
+LibroExistente
+-----011000010111000001101001
+Content-Disposition: form-data; name="ISBN"
+
+1234567890
+-----011000010111000001101001
+Content-Disposition: form-data; name="Author"
+
+Autor Test
+-----011000010111000001101001
+Content-Disposition: form-data; name="YearPublished"
+
+2023
+-----011000010111000001101001
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Test
+-----011000010111000001101001
+Content-Disposition: form-data; name="GenreIds"
+
+2
+-----011000010111000001101001
+Content-Disposition: form-data; name="Images"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image1.jpg
+-----011000010111000001101001--
+
+###  ISBN ya en uso
+POST {{API_BITLIBRO_HostAddress}}/api/books
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101002
+
+-----011000010111000001101002
+Content-Disposition: form-data; name="Name"
+
+LibroNuevo
+-----011000010111000001101002
+Content-Disposition: form-data; name="ISBN"
+
+1234567890
+-----011000010111000001101002
+Content-Disposition: form-data; name="Author"
+
+Autor Test
+-----011000010111000001101002
+Content-Disposition: form-data; name="YearPublished"
+
+2023
+-----011000010111000001101002
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Test
+-----011000010111000001101002
+Content-Disposition: form-data; name="GenreIds"
+
+1
+-----011000010111000001101002
+Content-Disposition: form-data; name="Images"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image1.jpg
+-----011000010111000001101002--
+
+###  Género no existe
+POST {{API_BITLIBRO_HostAddress}}/api/books
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101003
+
+-----011000010111000001101003
+Content-Disposition: form-data; name="Name"
+
+LibroGéneroNoExiste
+-----011000010111000001101003
+Content-Disposition: form-data; name="ISBN"
+
+9999999999
+-----011000010111000001101003
+Content-Disposition: form-data; name="Author"
+
+Autor Test
+-----011000010111000001101003
+Content-Disposition: form-data; name="YearPublished"
+
+2023
+-----011000010111000001101003
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Test
+-----011000010111000001101003
+Content-Disposition: form-data; name="GenreIds"
+
+9999
+-----011000010111000001101003
+Content-Disposition: form-data; name="Images"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image1.jpg
+-----011000010111000001101003--
+
+###  Errores de validación (campos vacíos)
+POST {{API_BITLIBRO_HostAddress}}/api/books
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101004
+
+-----011000010111000001101004
+Content-Disposition: form-data; name="Name"
+
+-----011000010111000001101004
+Content-Disposition: form-data; name="ISBN"
+
+-----011000010111000001101004
+Content-Disposition: form-data; name="Author"
+
+-----011000010111000001101004
+Content-Disposition: form-data; name="YearPublished"
+
+-----011000010111000001101004
+Content-Disposition: form-data; name="Editorial"
+
+-----011000010111000001101004
+Content-Disposition: form-data; name="Images"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image1.jpg
+-----011000010111000001101004--
+
+###  Creación exitosa (admin)
+POST {{API_BITLIBRO_HostAddress}}/api/books
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101005
+
+-----011000010111000001101005
+Content-Disposition: form-data; name="Name"
+
+LibroNuevoFinal
+-----011000010111000001101005
+Content-Disposition: form-data; name="ISBN"
+
+ABC123456789
+-----011000010111000001101005
+Content-Disposition: form-data; name="Author"
+
+Autor Final
+-----011000010111000001101005
+Content-Disposition: form-data; name="YearPublished"
+
+2025
+-----011000010111000001101005
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Nueva
+-----011000010111000001101005
+Content-Disposition: form-data; name="GenreIds"
+
+1
+-----011000010111000001101005
+Content-Disposition: form-data; name="Images"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image1.jpg
+-----011000010111000001101005--
+
+###  Creación erronea (employee)
+POST {{API_BITLIBRO_HostAddress}}/api/books
+Authorization: {{{{API_BIT_LIBRO_AccessTokenEmployee}}}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101005
+
+-----011000010111000001101005
+Content-Disposition: form-data; name="Name"
+
+LibroNuevoFinal
+-----011000010111000001101005
+Content-Disposition: form-data; name="ISBN"
+
+ABC123456789
+-----011000010111000001101005
+Content-Disposition: form-data; name="Author"
+
+Autor Final
+-----011000010111000001101005
+Content-Disposition: form-data; name="YearPublished"
+
+2025
+-----011000010111000001101005
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Nueva
+-----011000010111000001101005
+Content-Disposition: form-data; name="GenreIds"
+
+1
+-----011000010111000001101005
+Content-Disposition: form-data; name="Images"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image1.jpg
+-----011000010111000001101005--
+
+##################################################################
+###  Módulo Libros – PUT /api/books/{id}
+
+###  se añaden imágenes al actualizar
+PUT {{API_BITLIBRO_HostAddress}}/api/books/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101006
+
+-----011000010111000001101006
+Content-Disposition: form-data; name="Id"
+
+1
+-----011000010111000001101006
+Content-Disposition: form-data; name="Name"
+
+LibroActualizado
+-----011000010111000001101006
+Content-Disposition: form-data; name="ISBN"
+
+NEWISBN1234
+-----011000010111000001101006
+Content-Disposition: form-data; name="Author"
+
+Autor Actualizado
+-----011000010111000001101006
+Content-Disposition: form-data; name="YearPublished"
+
+2025
+-----011000010111000001101006
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Actualizada
+-----011000010111000001101006
+Content-Disposition: form-data; name="GenreIds"
+
+2
+-----011000010111000001101006
+Content-Disposition: form-data; name="Images"; filename="image2.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image2.jpg
+-----011000010111000001101006--
+
+###  Nombre o ISBN ya en uso
+PUT {{API_BITLIBRO_HostAddress}}/api/books/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101007
+
+-----011000010111000001101007
+Content-Disposition: form-data; name="Name"
+
+LibroExistente
+-----011000010111000001101007
+Content-Disposition: form-data; name="ISBN"
+
+1234567890
+-----011000010111000001101007
+Content-Disposition: form-data; name="Author"
+
+Autor Test
+-----011000010111000001101007
+Content-Disposition: form‑data; name="YearPublished"
+
+2025
+-----011000010111000001101007
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Test
+-----011000010111000001101007
+Content-Disposition: form‑data; name="GenreIds"
+
+1
+-----011000010111000001101007
+Content-Disposition: form-data; name="Images"; filename="image2.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image2.jpg
+-----011000010111000001101007--
+
+###  Género no existe
+PUT {{API_BITLIBRO_HostAddress}}/api/books/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101008
+
+-----011000010111000001101008
+Content-Disposition: form-data; name="Name"
+
+LibroActualizadoGéneroErr
+-----011000010111000001101008
+Content-Disposition: form-data; name="ISBN"
+
+UNIQUEISBN
+-----011000010111000001101008
+Content-Disposition: form-data; name="Author"
+
+Autor Test
+-----011000010111000001101008
+Content-Disposition: form‑data; name="YearPublished"
+
+2025
+-----011000010111000001101008
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Test
+-----011000010111000001101008
+Content-Disposition: form-data; name="GenreIds"
+
+9999
+-----011000010111000001101008
+Content-Disposition: form-data; name="Images"; filename="image2.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image2.jpg
+-----011000010111000001101008--
+
+###  Errores de validación
+PUT {{API_BITLIBRO_HostAddress}}/api/books/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101009
+
+-----011000010111000001101009
+Content-Disposition: form-data; name="Name"
+
+
+-----011000010111000001101009
+Content-Disposition: form-data; name="ISBN"
+
+
+-----011000010111000001101009
+Content-Disposition: form-data; name="Author"
+
+
+-----011000010111000001101009
+Content-Disposition: form-data; name="YearPublished"
+
+
+-----011000010111000001101009
+Content-Disposition: form-data; name="Editorial"
+
+
+-----011000010111000001101009
+Content-Disposition: form-data; name="GenreIds"
+
+
+-----011000010111000001101009
+Content-Disposition: form-data; name="Images"; filename="image2.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image2.jpg
+-----011000010111000001101009--
+
+###  Actualización exitosa
+PUT {{API_BITLIBRO_HostAddress}}/api/books/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101010
+
+-----011000010111000001101010
+Content-Disposition: form-data; name="Id"
+
+1
+-----011000010111000001101010
+Content-Disposition: form-data; name="Name"
+
+LibroActualizadoFinal
+-----011000010111000001101010
+Content-Disposition: form-data; name="ISBN"
+
+UPDATED12345
+-----011000010111000001101010
+Content-Disposition: form-data; name="Author"
+
+Autor Final
+-----011000010111000001101010
+Content-Disposition: form-data; name="YearPublished"
+
+2025
+-----011000010111000001101010
+Content-Disposition: form-data; name="Editorial"
+
+Editorial Final
+-----011000010111000001101010
+Content-Disposition: form-data; name="GenreIds"
+
+2
+-----011000010111000001101010
+Content-Disposition: form-data; name="Images"; filename="image2.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/image2.jpg
+-----011000010111000001101010--
+
+##################################################################
+###  Módulo Libros – DELETE /api/books/{id}
+
+###  Eliminación exitosa
+DELETE {{API_BITLIBRO_HostAddress}}/api/books/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+###  Libro inexistente
+DELETE {{API_BITLIBRO_HostAddress}}/api/books/9999
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+##################################################################
+###  Eliminar imágenes de un libro
+
+###  Eliminar imagen específica
+DELETE {{API_BITLIBRO_HostAddress}}/api/books/1/images/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+###  Eliminar todas las imágenes
+DELETE {{API_BITLIBRO_HostAddress}}/api/books/1/images
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}

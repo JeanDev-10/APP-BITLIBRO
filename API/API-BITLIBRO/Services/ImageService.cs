@@ -1,20 +1,17 @@
-using System;
-using API_BITLIBRO.Context;
 using API_BITLIBRO.Interfaces;
+using API_BITLIBRO.Interfaces.Repositories;
 using API_BITLIBRO.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
 
 namespace API_BITLIBRO.Services;
 
-public class ImageService:IImageService
+public class ImageService : IImageService
 {
-    private readonly AppDbContext _context;
+    private readonly IImageRepository _imageRepository;
     private readonly IWebHostEnvironment _environment;
 
-    public ImageService(AppDbContext context, IWebHostEnvironment environment)
+    public ImageService(IImageRepository imageRepository, IWebHostEnvironment environment)
     {
-        _context = context;
+        _imageRepository = imageRepository;
         _environment = environment;
     }
 
@@ -44,13 +41,14 @@ public class ImageService:IImageService
                 BookId = bookId
             });
         }
-        _context.Images.AddRange(newImages);
+        await _imageRepository.AddRangeAsync(newImages);
+        await _imageRepository.SaveChangesAsync();
     }
 
     public async Task DeleteImageAsync(int imageId)
     {
-        var image = await _context.Images.FindAsync(imageId);
-        if (image == null) throw new KeyNotFoundException($"No se encontró la imagen con ID {imageId}.");;
+        var image = await _imageRepository.GetByIdAsync(imageId);
+        if (image == null) throw new KeyNotFoundException($"No se encontró la imagen con ID {imageId}."); ;
 
         var filePath = Path.Combine(_environment.WebRootPath, image.Url.TrimStart('/'));
         if (File.Exists(filePath))
@@ -58,15 +56,15 @@ public class ImageService:IImageService
             File.Delete(filePath);
         }
 
-        _context.Images.Remove(image);
-        await _context.SaveChangesAsync();
+        _imageRepository.Remove(image);
+        await _imageRepository.SaveChangesAsync();
 
     }
 
     public async Task DeleteAllImagesAsync(int bookId)
     {
-        var images = await _context.Images.Where(i => i.BookId == bookId).ToListAsync();
-        if (!images.Any()) throw new KeyNotFoundException($"No se encontró la imagen del bookcon ID {bookId}.");;
+        var images = await _imageRepository.GetByBookIdAsync(bookId);
+        if (!images.Any()) throw new KeyNotFoundException($"No se encontró la imagen del bookcon ID {bookId}."); ;
 
         foreach (var image in images)
         {
@@ -77,13 +75,13 @@ public class ImageService:IImageService
             }
         }
 
-        _context.Images.RemoveRange(images);
-        await _context.SaveChangesAsync();
+        _imageRepository.RemoveRange(images);
+        await _imageRepository.SaveChangesAsync();
     }
 
     public async Task<string> GetImageUrlAsync(string imageUuid)
     {
-        var image = await _context.Images.FirstOrDefaultAsync(i => i.ImageUuid == imageUuid);
+        var image = await _imageRepository.GetByUuidAsync(imageUuid);
         return image?.Url;
     }
 }

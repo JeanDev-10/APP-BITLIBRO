@@ -11,5 +11,6 @@ public interface IBookService
     public Task<ResponseBookDTO> CreateBookAsync(CreateBookDTO createDto);
     public Task<ResponseBookDTO> UpdateBookAsync(UpdateBookDTO updateDto);
     public Task<bool> DeleteBookAsync(int id);
-
+    public Task DeleteImageFromBookAsync(int bookId, int imageId);
+    public Task DeleteAllImagesAsync(int bookId);
 }
