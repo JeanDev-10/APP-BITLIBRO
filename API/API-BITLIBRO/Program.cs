@@ -110,6 +110,7 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 // bind of unit of work to transactions
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

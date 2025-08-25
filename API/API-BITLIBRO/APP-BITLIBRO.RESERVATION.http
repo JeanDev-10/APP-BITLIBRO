@@ -1,0 +1,183 @@
+### 🔐 CONFIGURACIÓN GLOBAL
+@API_BITLIBRO_HostAddress=http://localhost:5188
+@API_BIT_LIBRO_AccessTokenAdmin=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwibmFtZWlkIjoiMTEzYjZjMmItMzlmNi00ZWIxLWI2NTMtYjEwYTk2MTRiMDFlIiwibGFzdG5hbWUiOiJTeXN0ZW0iLCJjaSI6IjEzMTEyMjAyMTEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0MjAwIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTE4OCIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NjA5NTU3MiwiZXhwIjoxNzU2MDk5MTcyLCJpYXQiOjE3NTYwOTU1NzJ9.vhGhExToBWlWvC08dRM1LTXoHTJx5zMIa7FRm6UPWAg
+@API_BIT_LIBRO_AccessTokenEmployee=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im51ZXZvMUBleGFtcGxlLmNvbSIsIm5hbWUiOiJFbXBsZWFkbyBDSSBSZXBldGlkbyIsIm5hbWVpZCI6IjVmYmM0NmMxLTU3NmItNDE5OS1hNzI2LTFkYjU1NWE2ZTc2YyIsImxhc3RuYW1lIjoiVGVzdCIsImNpIjoiMTIzNDU2Nzg5MCIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQyMDAiLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTg4Iiwicm9sZSI6IkVtcGxveWVlIiwibmJmIjoxNzU2MDk1NjE0LCJleHAiOjE3NTYwOTkyMTQsImlhdCI6MTc1NjA5NTYxNH0.l5sIHksyhSYFs7eiMwIetZdUPwUyQW4PsTYSxcfRa_g
+
+##################################################################
+### 📆 Módulo Reservaciones – GET /api/reservations
+
+### 🔍 Listar todas las reservaciones como admin(con filtros por ClientName, EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) si soy admin se muestran todas las reservaciones, en caso de ser empleado se muestran solo las reservaciones que he realizado --> (Admin, Employee)
+GET {{API_BITLIBRO_HostAddress}}/api/reservations?page=1&pageSize=10
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Listar solo mis reservaciones como Employee
+GET {{API_BITLIBRO_HostAddress}}/api/reservations?page=1&pageSize=10
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+
+### 🔍 Filtrar por ClientName
+GET {{API_BITLIBRO_HostAddress}}/api/reservations?clientName=Juan
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar por EmployeeName
+GET {{API_BITLIBRO_HostAddress}}/api/reservations?employeeName=Empleado
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar por Status
+GET {{API_BITLIBRO_HostAddress}}/api/reservations?status=Pendiente
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+##################################################################
+### 📆 GET /api/reservations/{id}
+
+### ❌ Reservación no encontrada
+GET {{API_BITLIBRO_HostAddress}}/api/reservations/9999
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### ✅ Acceso exitoso (Admin o Employee asignado)
+GET {{API_BITLIBRO_HostAddress}}/api/reservations/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+GET {{API_BITLIBRO_HostAddress}}/api/reservations/1
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+
+##################################################################
+### 📆 POST /api/reservations
+
+### ❌ CI ya registrado
+POST {{API_BITLIBRO_HostAddress}}/api/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "bookId": 2,
+  "startDate": "2025-08-25",
+  "endDate": "2025-09-01",
+  "ci": "1122334455",  
+  "name": "Juan",
+  "lastName": "Pérez"
+}
+
+
+### ❌ Error: UserId y datos nuevos (ambos enviados)
+POST {{API_BITLIBRO_HostAddress}}/api/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "bookId": 1,
+  "startDate": "2025-08-25",
+  "endDate": "2025-09-01",
+  "userId": "d4a27f04-cb9d-4137-a3e0-026d950896b8",
+  "ci": "0987654321",
+  "name": "Nuevo",
+  "lastName": "Usuario"
+}
+
+### ❌ Usuario no encontrado (userId inválido)
+POST {{API_BITLIBRO_HostAddress}}/api/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "bookId": 1,
+  "startDate": "2025-08-25",
+  "endDate": "2025-09-01",
+  "userId": "00000000-0000-0000-0000-000000000000"
+}
+
+### ❌ Libro no existe
+POST {{API_BITLIBRO_HostAddress}}/api/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "bookId": 9999,
+  "startDate": "2025-08-25",
+  "endDate": "2025-09-01",
+  "userId": "329ffffe-98a4-4afd-b744-8a863fad73de"
+}
+
+### ❌ Libro ya reservado en ese rango de fechas
+POST {{API_BITLIBRO_HostAddress}}/api/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "bookId": 2,
+  "startDate": "2025-08-25",
+  "endDate": "2025-08-30",
+  "userId": "329ffffe-98a4-4afd-b744-8a863fad73de"
+}
+
+### ❌ Validaciones fallidas (fechas incorrectas, sin usuario)
+POST {{API_BITLIBRO_HostAddress}}/api/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "bookId": 1,
+  "startDate": "2025-08-20",
+  "endDate": "2025-08-10"
+}
+
+### ✅ Reservación exitosa con datos nuevos de usuario
+POST {{API_BITLIBRO_HostAddress}}/api/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "bookId": 2,
+  "startDate": "2025-08-25",
+  "endDate": "2025-09-01",
+  "ci": "1122334455",
+  "name": "Carlos",
+  "lastName": "Gonzalez"
+}
+
+### ✅ Reservación exitosa con UserId
+POST {{API_BITLIBRO_HostAddress}}/api/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "bookId": 2,
+  "startDate": "2025-09-25",
+  "endDate": "2025-09-27",
+  "userId": "329ffffe-98a4-4afd-b744-8a863fad73de"
+}
+
+##################################################################
+### 📆 PUT /api/reservations/{id}
+
+### ✅ Actualización exitosa (Admin)
+PUT {{API_BITLIBRO_HostAddress}}/api/reservations/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: application/json
+
+{
+  "id": 1,
+  "status": "Finalizado",
+  "endDate": "2025-09-01"
+}
+
+### ✅ Actualización exitosa (Employee)
+PUT {{API_BITLIBRO_HostAddress}}/api/reservations/1
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+Content-Type: application/json
+
+{
+  "id": 1,
+  "status": "Cancelado",
+  "endDate": "2025-08-30"
+}
+
+### ❌ Validaciones fallidas (fecha fin antes de inicio, estado inválido)
+PUT {{API_BITLIBRO_HostAddress}}/api/reservations/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+Content-Type: application/json
+
+{
+  "id": 1,
+  "status": "Finalizado",
+  "endDate": "2025-01-01"
+}

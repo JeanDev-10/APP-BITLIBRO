@@ -182,9 +182,9 @@ Incluye los siguientes endpoints:
 
 Incluye los siguientes endpoints:
 
-- `GET /api/clients` - Listar clientes (con filtros por EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
+- `GET /api/clients` - Listar clientes (con filtros por CI, Name, LastName, Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
 - `GET /api/clients/{id}` - Obtener cliente por ID (Admin)
-- `GET /api/clients/{id}/reservations` - Obtener todas las reservaciones de un cliente por ID (con filtros por EmployeeName, Status, startDate y endDate (si solo se pasa el startDate es desde, sí solo e pasa el endDate es hasta pero si se pasan ambos parametros es entre un rango de fechas el filtro) . Paginar con Page - PageSize por defecto de 10) --> (Admin)
+- `GET /api/clients/{id}/reservations` - Obtener todas las reservaciones de un cliente por ID (con filtros por EmployeeName, Status, startDate y endDate (si solo se pasa el startDate es desde, sí solo se pasa el endDate es hasta pero si se pasan ambos parametros es entre un rango de fechas el filtro) . Paginar con Page - PageSize por defecto de 10) --> (Admin)
 
 ![Módulo Generos Swagger](capturas/DOCCLIENTS.png)
 

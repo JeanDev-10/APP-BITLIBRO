@@ -1,0 +1,69 @@
+### 🔐 CONFIGURACIÓN GLOBAL 
+@API_BITLIBRO_HostAddress=http://localhost:5188
+@API_BIT_LIBRO_AccessTokenAdmin=Bearer eyJhbGciOiJIUzI1NiIsInR...
+@API_BIT_LIBRO_AccessTokenEmployee=Bearer eyJhbGciOiJIUzI1NiIsInR...
+
+##################################################################
+### 👥 GET /api/clients – Listar todos los clientes
+
+### ✅ Listar clientes como Admin (sin filtros) - (con filtros por EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
+GET {{API_BITLIBRO_HostAddress}}/api/clients?page=1&pageSize=10
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### ✅ Listar clientes como Employee (sin filtros)
+GET {{API_BITLIBRO_HostAddress}}/api/clients?page=1&pageSize=10
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+
+### 🔍 Filtrar por EmployeeName
+GET {{API_BITLIBRO_HostAddress}}/api/clients?employeeName=Juan&page=1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar por Status
+GET {{API_BITLIBRO_HostAddress}}/api/clients?status=Activo
+Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
+
+##################################################################
+### 👤 GET /api/clients/{id}
+
+### ❌ Cliente no encontrado
+GET {{API_BITLIBRO_HostAddress}}/api/clients/9999
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### ✅ Obtener cliente por ID (Admin)
+GET {{API_BITLIBRO_HostAddress}}/api/clients/1
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+##################################################################
+### 📖 GET /api/clients/{id}/reservations – Reservas de cliente
+
+### ❌ Cliente no encontrado
+GET {{API_BITLIBRO_HostAddress}}/api/clients/9999/reservations
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### ✅ Obtener reservas de cliente con paginado y sin filtros
+GET {{API_BITLIBRO_HostAddress}}/api/clients/1/reservations?page=1&pageSize=10
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar por EmployeeName
+GET {{API_BITLIBRO_HostAddress}}/api/clients/1/reservations?employeeName=Carlos
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar por Status
+GET {{API_BITLIBRO_HostAddress}}/api/clients/1/reservations?status=Pendiente
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar por startDate (desde fecha)
+GET {{API_BITLIBRO_HostAddress}}/api/clients/1/reservations?startDate=2025-08-01
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar por endDate (hasta fecha)
+GET {{API_BITLIBRO_HostAddress}}/api/clients/1/reservations?endDate=2025-09-01
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar por rango de fechas (startDate y endDate)
+GET {{API_BITLIBRO_HostAddress}}/api/clients/1/reservations?startDate=2025-08-01&endDate=2025-08-31
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
+
+### 🔍 Filtrar combinando fecha, status y empleado
+GET {{API_BITLIBRO_HostAddress}}/api/clients/1/reservations?startDate=2025-08-01&endDate=2025-08-31&employeeName=Carlos&status=Pendiente
+Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}

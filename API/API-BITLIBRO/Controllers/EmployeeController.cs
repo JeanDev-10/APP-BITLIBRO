@@ -50,15 +50,11 @@ namespace API_BITLIBRO.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ApiResponse.Fail(
-                            ex.Message
-                        ));
+                return NotFound(ApiResponse.Fail(ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse.Fail(
-                                           ex.Message
-                                       ));
+                return BadRequest(ApiResponse.Fail(ex.Message));
             }
         }
         [HttpGet("{id}")]
