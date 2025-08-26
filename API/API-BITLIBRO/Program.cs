@@ -111,6 +111,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
 // bind of unit of work to transactions
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -48,7 +48,7 @@ namespace API_BITLIBRO.Controllers
 
             if (result == null)
                 return NotFound(ApiResponse.Fail("Cliente no encontrado"));
-            return Ok(ApiResponseData<PagedResponse<ReservationResponseDTO>>.Success(result,"Cliente obtenido correctamente"));
+            return Ok(ApiResponseData<PagedResponse<ReservationResponseDTO>>.Success(result,"Cliente obtenido correctamente con sus reservas"));
         }
     }
 }

@@ -1,25 +1,21 @@
 ### 🔐 CONFIGURACIÓN GLOBAL 
 @API_BITLIBRO_HostAddress=http://localhost:5188
-@API_BIT_LIBRO_AccessTokenAdmin=Bearer eyJhbGciOiJIUzI1NiIsInR...
-@API_BIT_LIBRO_AccessTokenEmployee=Bearer eyJhbGciOiJIUzI1NiIsInR...
+@API_BIT_LIBRO_AccessTokenAdmin=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwibmFtZSI6IkFkbWluIiwibmFtZWlkIjoiMTEzYjZjMmItMzlmNi00ZWIxLWI2NTMtYjEwYTk2MTRiMDFlIiwibGFzdG5hbWUiOiJTeXN0ZW0iLCJjaSI6IjEzMTEyMjAyMTEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0MjAwIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTE4OCIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NjE4MDQyMSwiZXhwIjoxNzU2MTg0MDIxLCJpYXQiOjE3NTYxODA0MjF9.Mr5nFnvJC5kEwwzdzhS-mdQS3U1OqKlZ_FGJ32VQThw
+@API_BIT_LIBRO_AccessTokenEmployee=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im51ZXZvMUBleGFtcGxlLmNvbSIsIm5hbWUiOiJFbXBsZWFkbyBDSSBSZXBldGlkbyIsIm5hbWVpZCI6IjVmYmM0NmMxLTU3NmItNDE5OS1hNzI2LTFkYjU1NWE2ZTc2YyIsImxhc3RuYW1lIjoiVGVzdCIsImNpIjoiMTIzNDU2Nzg5MCIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQyMDAiLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTg4Iiwicm9sZSI6IkVtcGxveWVlIiwibmJmIjoxNzU2MTgwNjAwLCJleHAiOjE3NTYxODQyMDAsImlhdCI6MTc1NjE4MDYwMH0.R3_79R6E05bbGx0IZeDX4l4517oIG6BDVg4kpxoHa7o
 
 ##################################################################
 ### 👥 GET /api/clients – Listar todos los clientes
 
-### ✅ Listar clientes como Admin (sin filtros) - (con filtros por EmployeeName, Status. Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
-GET {{API_BITLIBRO_HostAddress}}/api/clients?page=1&pageSize=10
+### ✅ Listar clientes como Admin (filtros por CI, Name, LastName, Paginar con Page - PageSize por defecto de 10) --> (Admin, Employee)
+GET {{API_BITLIBRO_HostAddress}}/api/clients?page=1&pageSize=10&Ci=9000
 Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
 
 ### ✅ Listar clientes como Employee (sin filtros)
 GET {{API_BITLIBRO_HostAddress}}/api/clients?page=1&pageSize=10
 Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
 
-### 🔍 Filtrar por EmployeeName
-GET {{API_BITLIBRO_HostAddress}}/api/clients?employeeName=Juan&page=1
-Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
-
-### 🔍 Filtrar por Status
-GET {{API_BITLIBRO_HostAddress}}/api/clients?status=Activo
+### 🔍 Filtrar por Name
+GET {{API_BITLIBRO_HostAddress}}/api/clients?name=Jean
 Authorization: {{API_BIT_LIBRO_AccessTokenEmployee}}
 
 ##################################################################
@@ -30,7 +26,7 @@ GET {{API_BITLIBRO_HostAddress}}/api/clients/9999
 Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
 
 ### ✅ Obtener cliente por ID (Admin)
-GET {{API_BITLIBRO_HostAddress}}/api/clients/1
+GET {{API_BITLIBRO_HostAddress}}/api/clients/329ffffe-98a4-4afd-b744-8a863fad73de
 Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
 
 ##################################################################
@@ -41,7 +37,7 @@ GET {{API_BITLIBRO_HostAddress}}/api/clients/9999/reservations
 Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
 
 ### ✅ Obtener reservas de cliente con paginado y sin filtros
-GET {{API_BITLIBRO_HostAddress}}/api/clients/1/reservations?page=1&pageSize=10
+GET {{API_BITLIBRO_HostAddress}}/api/clients/329ffffe-98a4-4afd-b744-8a863fad73de/reservations?page=1&pageSize=10
 Authorization: {{API_BIT_LIBRO_AccessTokenAdmin}}
 
 ### 🔍 Filtrar por EmployeeName
